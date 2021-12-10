@@ -1,0 +1,29 @@
+# Firebase functions
+
+## Setup
+You need the Java Development Kit (NOT just the Java Runtime Environment) to run Firebase functions locally.
+Moreover my /usr/bin/java (result of `which java`) was screwed up so I needed the system to find the new Java installation
+before the existing one (hence I prepend instead of append to PATH below).
+On Mac:
+```
+brew install java
+export PATH=/usr/local/opt/openjdk/bin:$PATH
+```
+
+## Compile the Typescript functions
+We use Typescript so you need to compile it before testing locally.
+```
+npm run build
+```
+
+## Test locally (runs the above compile step) on emulator
+Start the emulator:
+```
+./run_local_emulator.sh
+```
+
+Test HTTP functions after the emulator starts:
+```
+curl -X POST http://localhost:5001/poggers-eb88a/us-central1/getAuthToken -H 'Content-Type: application/json' -d '{"data": {"rawMessage":"Please verify you own address 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 [epoch time = 1636703634815]", "signature": "0xb9ffebce7c940c919631b5da298945de1f9233874adcc3912ec785a5da23995102c3fb0a2d0a0712ebf104b93dcd7c4e9524bf973c062cdf1a1554943b1c00321c", "address": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "time": 1636703634815}}'
+```
+Note: The "data": {} needs to be in the request and response because Firebase API rules force it (particularly from the client app API).

@@ -1,0 +1,41 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /dummy-local/{document} {
+      allow read, write: if true
+    }
+    match /kapil-local/{document} {
+      allow read: if true;
+      allow create: if document.matches('metadata') || document.matches('user_' + request.auth.uid) || document.matches('deal_.*');
+      allow update: if document.matches('metadata') || document.matches('user_' + request.auth.uid);
+      allow delete: if false;
+    }
+    match /ayan-local/{document} {
+      allow read: if true;
+      allow create: if document.matches('metadata') || document.matches('user_.*') || document.matches('deal_.*');
+      allow update: if document.matches('metadata') || document.matches('user_.*');
+      allow delete: if false;
+    }
+    match /karnik-local/{document} {
+      allow read: if true;
+      allow create: if document.matches('metadata') || document.matches('user_.*') || document.matches('deal_.*');
+      allow update: if document.matches('metadata') || document.matches('user_.*');
+      allow delete: if false;
+    }
+    match /ropsten/{document} {
+      // Initialize metadata manually, no code path can do it
+      allow read: if true;
+      allow create: if document.matches('user_' + request.auth.uid) || document.matches('deal_.*');
+      allow update: if document.matches('user_' + request.auth.uid);
+      allow delete: if false;
+    }
+    match /main/{document} {
+      // Initialize metadata manually, no code path can do it
+      allow read: if true;
+      allow create: if document.matches('user_' + request.auth.uid) || document.matches('deal_.*');
+      allow update: if document.matches('user_' + request.auth.uid);
+      allow delete: if false;
+    }
+  }
+}
