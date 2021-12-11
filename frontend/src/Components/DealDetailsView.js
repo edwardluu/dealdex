@@ -227,8 +227,6 @@ function DealDetailsView(props) {
                                 <Button onClick={setNewStartupToken}>Update startup token</Button>
                             </GridItem>
                         }
-                        
-                        
                 </SimpleGrid>
     
             }
@@ -289,6 +287,13 @@ function DealDetailsView(props) {
                                 <Button onClick={claimTokens}>Claim Tokens</Button>
                             </GridItem>
                     }
+
+                    <GridItem colSpan={colSpan}>
+                        <Heading size="l"> 
+                            NFT Token Address 
+                        </Heading>
+                        {dealData.gateToken} 
+                    </GridItem>
                      
                 </SimpleGrid>
             }

@@ -59,10 +59,11 @@ export default class DealService {
         )
         const deadline = BigNumber.from(deadlineUnixTimestamp.toString())
 
+        const gateToken = getGateTokensConfig(dealData, user)
         const participantAddresses = [creatorAddress, startupAddress];
         const tickDetails = await getTickDetailsConfig(dealData, user)
         const _investmentSizeConstraints = [minWeiPerInvestor, maxWeiPerInvestor, minTotalWei, maxTotalWei];
-        const investConfig = [_investmentSizeConstraints, /* lockConstraint = NO_CONSTRAINT */ 0, /* gateToken */ ethers.constants.AddressZero, deadline];
+        const investConfig = [_investmentSizeConstraints, /* lockConstraint = NO_CONSTRAINT */ 0, /* gateToken */ gateToken, deadline];
         const refundConfig = [/* allowRefunds */ true, /* lockConstraint = REQUIRE_UNLOCKED */ 2];
         const tokensConfig = getTokensConfig(dealData, user)
         const fundsConfig = [/* feeBps */ 0, /* lockConstraint = REQUIRE_LOCKED */ 1];
@@ -99,6 +100,8 @@ export default class DealService {
 
             const startupTokenAddress = config.tokensConfig.startupTokenAddress
 
+            const gateToken = config.investConfig.gateToken
+
             const ethPerToken = await getEthPerTokenInContract(startupTokenAddress, tickSize, tickValue, provider)
             
             const tokensInContract = await getTokensInContract(startupTokenAddress, contract.address, provider)
@@ -134,7 +137,8 @@ export default class DealService {
                 maxTotalInvestment,
                 investmentDeadline,
                 tokensInContract,
-                ethInContract
+                ethInContract,
+                gateTokenToDisplay(gateToken)
             )
 
             await DealService.initWithFirebase(deal)
@@ -227,6 +231,13 @@ function startupTokenAddressToDisplay(startupTokenAddress: string) {
     return startupTokenAddress
 }
 
+function gateTokenToDisplay(gateToken: string) {
+    if (gateToken === ethers.constants.AddressZero) {
+        return "N/A"
+    }
+    return gateToken
+}
+
 async function getTokensInContract(startupTokenAddress: string,
                                    contractAddress: string,
                                    provider: ethers.providers.Provider) {
@@ -260,6 +271,13 @@ function getTokensConfig(dealData: DealData, user: User): [string, number] {
         return [ethers.constants.AddressZero, /* lockConstraint = REQUIRE_LOCKED */ 1]
     }
     return [dealData.startupTokenAddress, /* lockConstraint = REQUIRE_LOCKED */ 1]
+}
+
+function getGateTokensConfig(dealData: DealData, user: User): string {
+    if (dealData.gateToken === undefined || dealData.gateToken === '') {
+        return ethers.constants.AddressZero
+    }
+    return dealData.gateToken
 }
 
 // tickSize is in wei. tickValue is in tokenBits.

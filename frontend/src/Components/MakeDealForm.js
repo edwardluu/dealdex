@@ -129,6 +129,16 @@ function MakeDealForm(props) {
                             isRequired = {true}
                         />
 
+                    <MakeDealFormItem 
+                            title="NFT Address"
+                            colSpan={colSpan}
+                            onChange = {e => setDealData({...dealData, gateToken: e.target.value.trim()})}
+                            placeholder = "0x..."
+                            value = {dealData.gateToken}
+                            helperText = "The Contract address of the NFT which may be required to participate in the deal."
+                            isRequired = {false}
+                        />
+
                     <InvestmentDeadlineItem
                             title="Investment Deadline"
                             colSpan={colSpan}

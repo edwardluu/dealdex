@@ -31,6 +31,7 @@ export default class DealData {
     investmentDeadline?: Date
     tokensInContract?: string
     ethInContract?: string
+    gateToken?: string
 
     constructor(startup: User, 
                 investors: User[], 
@@ -45,7 +46,8 @@ export default class DealData {
                 maxTotalInvestment?: string,
                 investmentDeadline?: Date,
                 tokensInContract?: string,
-                ethInContract?: string) {
+                ethInContract?: string,
+                gateToken?: string) {
         this.name = name
         this.dealAddress = dealAddress
         this.startup = startup
@@ -60,6 +62,7 @@ export default class DealData {
         this.investmentDeadline = investmentDeadline
         this.tokensInContract = tokensInContract
         this.ethInContract = ethInContract
+        this.gateToken = gateToken
     }
 
     static empty(user?: User) {
