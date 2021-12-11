@@ -131,6 +131,7 @@ module.exports = {
   networks: {
     hardhat: {
       chainId: 1337
-    }
+    },
+    ropsten: require('../secrets/ropsten_infura.json')
   }
 };
