@@ -5,19 +5,24 @@ import DealService from '../Services/DealService'
 import User from '../DataModels/User'
 import { Flex, Container, ChakraProvider } from '@chakra-ui/react';
 import {
+    Alert,
+    AlertDescription,
+    AlertIcon,
+    AlertTitle,
+    Button,
+    Checkbox,
+    CloseButton,
     FormControl,
     FormHelperText,
     FormLabel,
-    Input,
-    VStack,
-    Heading,
-    Text,
-    SimpleGrid,
     GridItem,
+    Heading,
+    Input,
     Select,
-    Checkbox,
-    Button,
+    SimpleGrid,
+    Text,
     useBreakpointValue,
+    VStack,
   } from '@chakra-ui/react';
 
 import DatePicker from "react-datepicker";
@@ -27,7 +32,16 @@ import {useHistory} from "react-router-dom"
 
 function MakeDealForm(props) {
     const {user, loading} = React.useContext(AuthContext)
-    const [startDate, setStartDate] = useState(new Date());
+    const newDate = new Date();
+
+    // Set default deadline to be a week
+    newDate.setDate(newDate.getDate() + 7);
+    
+    const [startDate, setStartDate] = useState(newDate);
+    // This is doubling as the display variable so 'none' is the only valid default value
+    const [alertTitle, setAlertTitle] = useState('none')
+    const [alertDescription, setAlertDescription] = useState('<Alert Description>')
+    const [alertStatus, setAlertStatus] = useState('info')
 
     const [dealData, setDealData] = useState(DealData.empty());
     dealData.investmentDeadline = startDate
@@ -35,13 +49,36 @@ function MakeDealForm(props) {
     let history = useHistory()
 
     async function createDeal() {
-        await DealService.publishDeal(dealData, user)
-        history.push("/account")
+        let ret = await DealService.publishDeal(dealData, user);
+        console.log(ret);
+        if (ret.error == null) {
+            history.push("/account");
+            setAlertStatus("success");
+            setAlertTitle("Successfully created deal");
+            setAlertDescription("Txn hash: " + ret.hash);
+        } else {
+            setAlertStatus("error");
+            setAlertTitle("Failed to create deal");
+            setAlertDescription(ret.error);
+        }
     }
     const colSpan = useBreakpointValue({ base: 2, md: 1 });
 
+    const formatInput = (event) => {
+        const attribute = event.target.getAttribute('name')
+        this.setState({ [attribute]: event.target.value.trim() })
+      }
+
     return (
             <Container maxW="container.xl" p={0}>
+            <Flex position="fixed" top='0px' backgroundColor="white" w="container.xl" >
+            <Alert status={alertStatus} display={alertTitle}>
+                <AlertIcon />
+                <AlertTitle>{alertTitle}</AlertTitle>
+                <AlertDescription>{alertDescription}</AlertDescription>
+                <CloseButton position='absolute' right='8px' top='8px' onClick={() => setAlertTitle('none')} />
+            </Alert>
+            </Flex>
                 <Flex
                     h={{ base: 'auto', md: '100vh' }}
                     py={[0, 10, 20]}
@@ -56,9 +93,10 @@ function MakeDealForm(props) {
                     <MakeDealFormItem 
                             title="Deal Name"
                             colSpan={2}
-                            onChange = {e => setDealData({ ...dealData, name: e.target.value.trim()})}
+                            onChange = {e => setDealData({ ...dealData, name: e.target.value})}
                             placeholder = "Deal Name"
                             value = {dealData.name}
+                            onBlur = {e => formatInput(e)}
                             isRequired = {true}
                         />
                     <MakeDealFormItem 

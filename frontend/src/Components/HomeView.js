@@ -46,7 +46,7 @@ function HomeView(props) {
           >
       <VStack w="full" h="full" p={10} spacing={10} alignItems="flex-start">
       <VStack spacing={3} alignItems="flex-start">
-      <Heading size="2xl">Early-stage crypto investing.</Heading>
+      <Heading size="2xl">Crypto investing.</Heading>
       <Heading size="2xl">Simplified.</Heading>
 
       <Route path="/createDeal" >

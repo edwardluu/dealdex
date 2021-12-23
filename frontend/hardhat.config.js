@@ -132,6 +132,7 @@ module.exports = {
     hardhat: {
       chainId: 1337
     },
-    ropsten: require('../secrets/ropsten_infura.json')
+    ropsten: require('../secrets/ropsten_infura.json'),
+    mumbai: require('../secrets/mumbai_infura.json')
   }
 };

@@ -5,6 +5,8 @@ import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, collection, g
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { getAuth, signInWithCustomToken } from "firebase/auth";
 import User from "./DataModels/User"
+// Used to sign in. Doesn't belong here and should get moved to a different file
+import {ethers} from 'ethers';
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -145,6 +147,24 @@ function fbOnAuthStateChanged(handleUser) {
     })
 }
 
+async function fbSignIn(ethereum) {
+    console.log("fbSignIn")
+    if (!ethereum) {
+        console.log("No ethereum wallet in browser");
+        return;
+    }   
+    await ethereum.request({ method: 'eth_requestAccounts' }); 
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    const address = await signer.getAddress();
+    const utcMillisSinceEpoch = new Date().getTime();
+    let rawMessage = `Please verify you own address ${address} [epoch time = ${utcMillisSinceEpoch}]`;
+    let signature = await signer.signMessage(rawMessage);
+    
+    await fbSignInHelper(rawMessage, signature, address, utcMillisSinceEpoch);
+}
+
+
 /* CLOUD FUNCTIONS */
 async function fbSignInHelper(rawMessage, signature, address, time) {
     let authCloudFunc = httpsCallable(functions, "getAuthToken");
@@ -169,4 +189,4 @@ async function fbSignInHelper(rawMessage, signature, address, time) {
         });
 }
 
-export { app, db, getFirebaseDoc, writeFirebaseDoc, fbCreateDeal, fbCreatePendingDeal, fbDeletePendingDeal, fbInvest, getUserDoc, getDealDoc, getAllDealDocs, fbSignInHelper, fbSignOut, fbOnAuthStateChanged };
+export { app, db, getFirebaseDoc, writeFirebaseDoc, fbCreateDeal, fbCreatePendingDeal, fbDeletePendingDeal, fbInvest, getUserDoc, getDealDoc, getAllDealDocs, fbSignIn, fbSignOut, fbOnAuthStateChanged };

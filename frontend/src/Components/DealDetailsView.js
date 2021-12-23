@@ -3,31 +3,37 @@ import {ethers} from 'ethers';
 import {useLocation, useHistory} from 'react-router-dom'
 import DealData from '../DataModels/DealData';
 import {
-    Flex,
-    Container,
+    Alert,
+    AlertDescription,
+    AlertIcon,
+    AlertTitle,
+    Button,
     ChakraProvider,
+    Checkbox,
+    CloseButton,
+    Container,
+    Flex,
     FormControl,
     FormLabel,
-    Input,
-    VStack,
-    Heading,
-    Text,
-    SimpleGrid,
     GridItem,
+    Heading,
+    Input,
     Select,
-    Checkbox,
-    Button,
-    useBreakpointValue,
+    SimpleGrid,
     Table, 
-    Tr,
-    Th,
     Tbody,
+    Td,
+    Text,
+    Th,
     Thead,
-    Td
+    Tr,
+    useBreakpointValue,
+    VStack,
   } from '@chakra-ui/react';
   
 import {AuthContext} from "../Context/AuthContext"
 import DealService from '../Services/DealService';
+import { fbSignIn } from "../firebaseUtils"
 
 
 function DealDetailsView(props) {
@@ -42,71 +48,123 @@ function DealDetailsView(props) {
     const [ethToInvest, setEthToInvest] = useState(0)
     const [newStartupTokenAddress, setNewStartupTokenAddress] = useState('')
     const [newStartupTokenPrice, setNewStartupTokenPrice] = useState('')
+    // This is doubling as the display variable so 'none' is the only valid default value
+    const [alertTitle, setAlertTitle] = useState('none')
+    const [alertDescription, setAlertDescription] = useState('<Alert Description>')
+    const [alertStatus, setAlertStatus] = useState('info')
     const colSpan = useBreakpointValue({ base: 2, md: 1 });
 
-
-    async function requestAccount() {
-        const ethereum = window.ethereum
-        await ethereum.request({ method: 'eth_requestAccounts' });
-        // await setConnectedUser()
-        // history.push("/")
+    async function fetchDeal() {
+        if (typeof window.ethereum == 'undefined') {
+            return;
+        }
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const deal = await DealService.fetchDeal(provider, dealAddress)
+        setDealData(deal)
+        console.log(deal)
     }
 
-    async function fetchDeal() {
-        if (typeof window.ethereum !== 'undefined') {
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
-            const deal = await DealService.fetchDeal(provider, dealAddress)
-            setDealData(deal)
-            console.log(deal)
-        }  
+    function setAlert(status, title, description) {
+        setAlertStatus(status)
+        setAlertTitle(title)
+        setAlertDescription(description)
     }
 
     async function invest() {
-        if (typeof window.ethereum !== 'undefined') {
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
-            const signer = provider.getSigner()
+        if (typeof window.ethereum == 'undefined') {
+            return;
+        }
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const signer = provider.getSigner()
+        let ret = await DealService.invest(signer, dealData, ethToInvest)
+        if (ret.error == null) {
+            // We should ensure that the smart contract's behavior always is to invest ethToInvest
+            // (as opposed to, for example, investing some proportion of that). Otherwise this can
+            // really confuse the user
+            setAlert("success", `Successfully invested ${ethToInvest} ETH`, "Txn hash: " + ret.hash)
+        } else {
+            setAlert("error", "Failed to invest", ret.error)
+        }
+    }
 
-            await DealService.invest(signer, dealData, ethToInvest)
-        }  
+    async function claimRefund() {
+        if (typeof window.ethereum == 'undefined') {
+            return;
+        }
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const signer = provider.getSigner()
+        let ret = await DealService.claimRefund(signer, dealData)
+        if (ret.error == null) {
+            setAlert("success", "Successfully claimed refund!", "Txn hash: " + ret.hash)
+        } else {
+            setAlert("error", "Failed to claim refund", ret.error)
+        }
     }
 
     async function sendTokens() {
-        if (typeof window.ethereum !== 'undefined') {
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
-            const signer = provider.getSigner()
-            console.log(tokensToSend)
-            await DealService.sendTokens(signer, dealData, tokensToSend)
-        }  
+        if (typeof window.ethereum == 'undefined') {
+            return;
+        }
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const signer = provider.getSigner()
+        console.log(tokensToSend)
+        let ret = await DealService.sendTokens(signer, dealData, tokensToSend)
+        if (ret.error == null) {
+            setAlert("success", `Successfully sent ${tokensToSend} tokens!`, "Txn hash: " + ret.hash)
+        } else {
+            setAlert("error", "Failed to send tokens", ret.error)
+        }
     }
 
     async function setNewStartupToken() {
-        await DealService.updateStartupToken(user, dealData, newStartupTokenAddress, newStartupTokenPrice)
+        let ret = await DealService.updateStartupToken(user, dealData, newStartupTokenAddress, newStartupTokenPrice)
+        if (ret.error == null) {
+            setAlert("success", "Successfully set startup token!", "Txn hash: " + ret.hash)
+        } else {
+            setAlert("error", "Failed to set startup token", ret.error)
+        }
     }
 
     async function claimFunds() {
-        if (typeof window.ethereum !== 'undefined') {
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
-            const signer = provider.getSigner()
-            console.log(tokensToSend)
-            await DealService.claimFunds(signer, dealData)
-        }  
+        if (typeof window.ethereum == 'undefined') {
+            return;
+        }
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const signer = provider.getSigner()
+        let ret = await DealService.claimFunds(signer, dealData)
+        if (ret.error == null) {
+            setAlert("success", "Successfully claimed funds!", "Txn hash: " + ret.hash)
+        } else {
+            setAlert("error", "Failed to claim funds", ret.error)
+        }
     }
 
     async function claimTokens() {
-        if (typeof window.ethereum !== 'undefined') {
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
-            const signer = provider.getSigner()
-            console.log(tokensToSend)
-            await DealService.claimTokens(signer, dealData)
-        }  
+        if (typeof window.ethereum == 'undefined') {
+            return;
+        }
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const signer = provider.getSigner()
+        let ret = await DealService.claimTokens(signer, dealData)
+        if (ret.error == null) {
+            setAlert("success", "Successfully claimed tokens!", "Txn hash: " + ret.hash)
+        } else {
+            setAlert("error", "Failed to claim tokens", ret.error)
+        }
     }
 
-    useEffect(() => {
-        fetchDeal();
-      }, [])
-      console.log(user, loading)
+    useEffect(() => { fetchDeal(); }, []);
+    console.log(user, loading)
     return(
         <Container maxW="container.xl" p={0}>
+            <Flex position="fixed" top='0px' backgroundColor="white" w="container.xl" >
+            <Alert status={alertStatus} display={alertTitle}>
+                <AlertIcon />
+                <AlertTitle>{alertTitle}</AlertTitle>
+                <AlertDescription>{alertDescription}</AlertDescription>
+                <CloseButton position='absolute' right='8px' top='8px' onClick={() => setAlertTitle('none')} />
+            </Alert>
+            </Flex>
             <Flex
                 h={{ base: 'auto', md: '100vh' }}
                 py={[0, 10, 20]}
@@ -116,8 +174,8 @@ function DealDetailsView(props) {
             <VStack spacing={3} alignItems="flex-start">
             <Heading size="2xl">Deal Details</Heading>
             </VStack>
-            {!user && !loading &&           
-                <Button onClick={requestAccount}>
+            {!user && !loading && 
+                <Button onClick={() => fbSignIn(window.ethereum)}>
                     Connect Metamask to Participate
                 </Button>
             }
@@ -281,8 +339,13 @@ function DealDetailsView(props) {
                         </GridItem>
                     }
 
+                    {user && !user.isStartup(dealData) && 
+                        <GridItem colSpan={1}>
+                            <Button onClick={claimRefund}>Claim Refund</Button>
+                        </GridItem>
+                    }
 
-                    {user && user.isStartup(dealData) && 
+                    {user && !user.isStartup(dealData) && 
                             <GridItem colSpan={1}>
                                 <Button onClick={claimTokens}>Claim Tokens</Button>
                             </GridItem>

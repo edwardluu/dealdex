@@ -70,10 +70,10 @@ contract Deal is ILockableDeal {
         require(msg.value >= config.investConfig.sizeConstraints.minInvestmentPerInvestor, "Investment amount is too low");
         require(msg.value <= config.investConfig.sizeConstraints.maxInvestmentPerInvestor, "Investment amount is too high");
         require(msg.value + totalReceivedInvestment <= config.investConfig.sizeConstraints.maxTotalInvestment, "Investment will exceed total investment cap");
-        require(msg.value % config.tickDetails.tickSize == 0, "Investment amount must be a multiple of tick size");
+        require(config.tickDetails.tickSize == 0 || msg.value % config.tickDetails.tickSize == 0, "Investment amount must be a multiple of tick size");
         require(!deadlineHasPassed(), "Investment deadline has passed");
         require(address(0) == config.investConfig.gateToken || 0 < IERC721(config.investConfig.gateToken).balanceOf(msg.sender), "Potential investor does not own requisite NFT for this gated deal");
-        require(isValidLockStatus(config.investConfig.lockConstraint), "Cannot invest because the lock flag value was rejected");
+        require(isValidLockStatus(config.investConfig.lockConstraint), string(abi.encodePacked("Cannot invest because the deal is ", (!isLockedFlag ? "un" : ""), "locked")));
 
         investorToReceivedAmount[msg.sender] = msg.value;
         totalReceivedInvestment += msg.value;
@@ -85,7 +85,7 @@ contract Deal is ILockableDeal {
     // The startup can claim all funds as long as the deadline has passed and the deal is valid
     function claimFunds() external override {
         require(msg.sender == config.participantAddresses.startup, "Only the startup can claim the funds");
-        require(isValidLockStatus(config.fundsConfig.lockConstraint), "Cannot claim funds because the lock flag value was rejected");
+        require(isValidLockStatus(config.fundsConfig.lockConstraint), string(abi.encodePacked("Cannot claim funds because the deal is ", (!isLockedFlag ? "un" : ""), "locked")));
 
         // TODO: If we want to make sure tokens have been deposited before fund withdrawal, we can make that check here
 
@@ -100,7 +100,7 @@ contract Deal is ILockableDeal {
     // Investors can get a refund as long as the investment deadline has not passed or if the deal is invalid.
     function claimRefund() external override {
         require(config.refundConfig.allowRefunds, "Deal disallows refunds");
-        require(isValidLockStatus(config.refundConfig.lockConstraint), "Cannot claim refund because the lock flag value was rejected");
+        require(isValidLockStatus(config.refundConfig.lockConstraint), string(abi.encodePacked("Cannot claim refund because the deal is ", (!isLockedFlag ? "un" : ""), "locked")));
 
         uint256 amountToRefund = investorToReceivedAmount[msg.sender];
         require(amountToRefund > 0, "Only an investor can receive a refund");
@@ -129,7 +129,7 @@ contract Deal is ILockableDeal {
     // Investors can claim tokens as long as they have invested, have not claimed their tokens yet, and the contract has tokens
     function claimTokens() external override {
         require(address(0) != config.tokensConfig.startupTokenAddress, "Startup token not yet specified");
-        require(isValidLockStatus(config.tokensConfig.lockConstraint), "Cannot claim tokens because the lock flag value was rejected");
+        require(isValidLockStatus(config.tokensConfig.lockConstraint), string(abi.encodePacked("Cannot claim tokens because the deal is ", (!isLockedFlag ? "un" : ""), "locked")));
         uint256 receivedInvestment = investorToReceivedAmount[msg.sender];
         require(receivedInvestment > 0, "Must be an investor to claim tokens");
         uint256 tokensToClaim = receivedInvestment * config.tickDetails.tickValue / config.tickDetails.tickSize;
@@ -152,6 +152,7 @@ contract Deal is ILockableDeal {
     // Setters
     function setStartupToken(address _startupTokenAddress, TickDetails memory _tickDetails) external {
         require(msg.sender == config.participantAddresses.startup, "Only the startup can set the startup token");
+        require(config.tokensConfig.startupTokenAddress == address(0), "The startup already set the startup token; it cannot be changed");
         config.tokensConfig.startupTokenAddress = _startupTokenAddress;
         config.tickDetails = _tickDetails;
     }
