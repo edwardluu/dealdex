@@ -17,9 +17,13 @@ import {
     Td,
     TableCaption,
   } from '@chakra-ui/react';
+import DatabaseService from '../Services/DatabaseService';
 
 function AccountView(props) {
-  const {user, loading} = React.useContext(AuthContext)
+  console.log(React.useContext(AuthContext))
+  const {userAddress, loading} = React.useContext(AuthContext)
+  console.log(userAddress)
+  console.log(loading)
 
   const [dealsWhereStartup, setDealsWhereStartup] = useState([])
   const [dealsWhereInvestor, setDealsWhereInvestor] = useState([])
@@ -27,27 +31,21 @@ function AccountView(props) {
   const [pendingDealsWhereInvestor, setPendingDealsWhereInvestor] = useState([])
   const [username, setUsername] = useState("")
 
-  // Update url
-  async function updateUrl(field, value) {
-    if (window.history.pushState) {
-      var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + field + '=' + value;
-      window.history.pushState({path:newurl},'',newurl);
-    }
-  }
-
 
   // https://stackoverflow.com/questions/10970078/modifying-a-query-string-without-reloading-the-page
   // Use this to update the url
 
   async function fetchDeals() {
-    updateUrl('address', user.address)
+    console.log(userAddress)
+    console.log(loading)
     try {
+      let user = await DatabaseService.getUser(userAddress)
       let deals = await user.getDealsWhereStartup()
 
       let startupPendingDeals = await user.getPendingDealsWhereStartup()
       let investorPendingDeals = await user.getPendingDealsWhereInvestor()
       let investments = await user.getDealsWhereInvestor()
-      let name = await user.getUsername()
+      let name = user.name
 
       setDealsWhereStartup(deals)
       setPendingDealsWhereInvestor(investorPendingDeals)
@@ -72,7 +70,7 @@ function AccountView(props) {
           <VStack spacing={3} alignItems="flex-start">
             <Heading size="2xl">My Account</Heading>
             <Text>{username}</Text>
-            <Text>{user.address}</Text>
+            <Text>{userAddress}</Text>
           </VStack>
 
           <VStack spacing={3} alignItems="flex-start">

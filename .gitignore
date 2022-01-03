@@ -1,4 +1,7 @@
 **/.DS_Store
-**/node_modules
+**/node_modules/
 
-secrets
+**/secrets/firebaseConfig.json
+**/secrets/mumbai_infura.json
+**/secrets/ropsten_infura.json
+**/secrets/service_account_file.json

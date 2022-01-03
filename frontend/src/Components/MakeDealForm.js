@@ -1,6 +1,6 @@
 import React, {useState, setState} from 'react';
 import {ethers} from 'ethers';
-import DealData from '../DataModels/DealData';
+import {Deal} from '../DataModels/DealData';
 import DealService from '../Services/DealService'
 import User from '../DataModels/User'
 import { Flex, Container, ChakraProvider } from '@chakra-ui/react';
@@ -31,7 +31,8 @@ import {AuthContext} from "../Context/AuthContext"
 import {useHistory} from "react-router-dom"
 
 function MakeDealForm(props) {
-    const {user, loading} = React.useContext(AuthContext)
+    const {userAddress, loading} = React.useContext(AuthContext)
+    let user = User.empty(userAddress)
     const newDate = new Date();
 
     // Set default deadline to be a week
@@ -43,7 +44,7 @@ function MakeDealForm(props) {
     const [alertDescription, setAlertDescription] = useState('<Alert Description>')
     const [alertStatus, setAlertStatus] = useState('info')
 
-    const [dealData, setDealData] = useState(DealData.empty());
+    const [dealData, setDealData] = useState(Deal.empty());
     dealData.investmentDeadline = startDate
 
     let history = useHistory()

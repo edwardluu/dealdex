@@ -1,22 +1,7 @@
-import {ethers, BigNumber, Signer, providers } from 'ethers';
-import {BigNumber as BigNumberJS} from "bignumber.js"
 import User from './User';
 
-// artifacts directory is generated when you run 
-// npx hardhat compile
-// in the commandline
-// compile target directory is defined in hardhat.config.js
-import DealFactory from '../artifacts/contracts/PogDeal.sol/DealFactory.json'
-import Deal from '../artifacts/contracts/PogDeal.sol/Deal.json'
-import ERC20_ABI from "../ContractABIs/ERC20.json"
 
-
-import DeploymentState from "../artifacts/deployment-info/DeploymentState.json"
-import { getUserDoc } from '../firebaseUtils';
-const { getFirebaseDoc, fbCreateDeal, fbCreatePendingDeal, getDealDoc, fbInvest, getAllDealDocs } = require("../firebaseUtils.js");
-
-
-export default class DealData {
+class Deal {
     name?: string
     dealAddress?: string
     startup: User
@@ -65,12 +50,9 @@ export default class DealData {
         this.gateToken = gateToken
     }
 
-    static empty(user?: User) {
-        if (user !== undefined) {
-            return new DealData(user, [], [])
-        } else {
-            return new DealData(User.empty(), [], [])
-        }
+    static empty() {
+        return new Deal(User.empty(), [], [])
     }
-
 }
+
+export {Deal}

@@ -1,93 +1,77 @@
 import React, { useEffect, useState } from "react";
-import User from "../DataModels/User"
 import {ethers} from "ethers"
-import { fbSignInHelper, fbSignOut, fbOnAuthStateChanged } from "../firebaseUtils";
+import AuthService from "../Services/AuthService";
+import DatabaseService from "../Services/DatabaseService";
 
 
 export const AuthContext = React.createContext()
 
 export const AuthProvider = ({ children }) => {
-    const [state, setState] = useState({user: null, loading: true})
+    const [state, setState] = useState({userAddress: null, loading: true})
 
     async function syncFirebaseAndWallet() {
         console.log("syncing wallet with auth")
 
         if (!window.ethereum) {
             console.log("No Ethereum wallet in browser")
-            await fbSignOut()
+            await AuthService.fbSignOut()
             return
         }
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const signer = provider.getSigner()
 
         const accounts = await provider.listAccounts();
-        // accounts = await web3.eth.getAccounts();
 
-        if (accounts.length == 0 && state.user) {
-            await fbSignOut()
-        } else if (accounts.length > 0 && state.user) {
+        if (accounts.length == 0 && state.userAddress) {
+            await AuthService.fbSignOut()
+        } else if (accounts.length > 0 && state.userAddress) {
             const address = await signer.getAddress();
-            // console.log(address)
-            // console.log(state.user.address)
-            if (address != state.user.address) {
-                // console.log(address)
-                // console.log(state.user.address)
-                // console.log("signing out")
-                await fbSignOut()
+
+            if (address != state.userAddress) {
+                await AuthService.fbSignOut()
             }
         } 
     }
 
-    async function handleUpdatedUser(user) {
-        console.log("updating user")
-        setState({user: null, loading: true})
-        if (user) {
+    async function handleUpdatedUser(userAddress) {
+        setState({userAddress: null, loading: true})
+        if (userAddress) {
             const provider = new ethers.providers.Web3Provider(window.ethereum)
             const signer = provider.getSigner()
-            user.signer = signer
-            await user.createIfNecessary()
-            await validateUser(user)
+            await DatabaseService.getUser(userAddress)
+            let validatedUser = await validateUser(userAddress)
+
+            if (validatedUser === null) {
+                setState({userAddress: null, loading: false})
+            } else {
+                setState({userAddress: validatedUser, loading: false})
+            }
         } else {
-            setState({user: null, loading: false})
+            setState({userAddress: null, loading: false})
         }
         
     }
 
-    async function validateUser(user) {
+    async function validateUser(userAddress) {
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const signer = provider.getSigner()
 
         const accounts = await provider.listAccounts();
-        // accounts = await web3.eth.getAccounts();
 
         if (accounts.length == 0) {
-            await fbSignOut()
+            await AuthService.fbSignOut()
+            return null
         } else if (accounts.length > 0) {
             const address = await signer.getAddress();
-            if (address != user.address) {
-                await fbSignOut()
+            if (address != userAddress) {
+                await AuthService.fbSignOut()
+                return null
             } else {
-                setState({user: user, loading: false})
+                return userAddress
             }
         } 
     }
 
-    // async function updateState() {
-    //     setState({user: null, loading: true})
-    //     const provider = new ethers.providers.Web3Provider(window.ethereum)
-    //     const signer = provider.getSigner()
-
-    //     const accounts = await provider.listAccounts();
-    //         // accounts = await web3.eth.getAccounts();
-    //         if (accounts.length > 0) {
-    //             const address = await signer.getAddress();
-    //             const newUser = new User(address, signer)
-    //             await newUser.createIfNecessary()                
-    //             setState({user: newUser, loading: false})
-    //         } else {
-    //             setState({user: null, loading: false})
-    //         }
-    // }
 
     useEffect(() => {
         syncFirebaseAndWallet()
@@ -98,7 +82,7 @@ export const AuthProvider = ({ children }) => {
         }
         listenMMAccount();
 
-        const unsubscribe = fbOnAuthStateChanged(handleUpdatedUser)
+        const unsubscribe = AuthService.fbOnAuthStateChanged(handleUpdatedUser)
 
         return unsubscribe
       }, []);

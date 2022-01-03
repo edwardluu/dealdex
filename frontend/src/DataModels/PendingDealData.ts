@@ -1,7 +1,3 @@
-import {ethers, Signer} from 'ethers';
-import DeploymentState from "../artifacts/deployment-info/DeploymentState.json"
-import {getUserDoc} from "../firebaseUtils"
-import DealData from './DealData';
 
 
 export default class PendingDealData {

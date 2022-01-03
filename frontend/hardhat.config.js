@@ -3,7 +3,7 @@
 require("@nomiclabs/hardhat-waffle");
 require('@openzeppelin/hardhat-upgrades');
 
-const { getFirebaseDoc, writeFirebaseDoc, fbCreateDeal, fbInvest } = require("./hardhatFirebaseUtils.js");
+const { writeFirebaseDoc } = require("./hardhatFirebaseUtils.js");
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -123,7 +123,8 @@ task("configureForTestnet", "Points web app to the ropsten firebase collection")
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
-module.exports = {
+
+var config = {
   solidity: "0.8.4",
   paths: {
     artifacts: './src/artifacts',
@@ -131,8 +132,26 @@ module.exports = {
   networks: {
     hardhat: {
       chainId: 1337
-    },
-    ropsten: require('../secrets/ropsten_infura.json'),
-    mumbai: require('../secrets/mumbai_infura.json')
+    }
   }
-};
+}
+
+try {
+  let ropsten = require('../secrets/ropsten_infura.json')
+  config.ropsten = ropsten
+} catch {
+  console.log("Unable to load Ropsten infura credentials")
+}
+
+try {
+  let mumbai = require('../secrets/mumbai_infura.json')
+  config.mumbai = mumbai
+} catch {
+  console.log("Unable to load Mumbai infura credentials")
+}
+
+
+
+
+
+module.exports = config

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {ethers} from 'ethers';
+
 import {AuthContext} from "../Context/AuthContext"
 import {useHistory, Redirect} from "react-router-dom"
 import {
@@ -19,11 +19,11 @@ import {
     Button,
     useBreakpointValue,
   } from '@chakra-ui/react';
-import { fbSignIn } from "../firebaseUtils"
+import AuthService from "../Services/AuthService"
 import Loader from "react-loader-spinner"
 
 function LoginView() {
-    const {user, loading} = React.useContext(AuthContext)
+    const {userAddress, loading} = React.useContext(AuthContext)
     let history = useHistory()
 
     return(
@@ -34,9 +34,9 @@ function LoginView() {
                     py={[20, 10, 20]}
                     direction={{ base: 'column-reverse', md: 'row' }}
                     >
-                    {user 
+                    {userAddress 
                         ? <Redirect to = "/" />
-                        : <Button onClick={() => fbSignIn(window.ethereum)}>
+                        : <Button onClick={() => AuthService.fbSignIn(window.ethereum)}>
                             Connect Metamask
                         </Button>
                     }

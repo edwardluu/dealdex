@@ -9,7 +9,7 @@ function Nav() {
     const navStyle = {
         color: 'white'
     }
-    const {user, loading} = React.useContext(AuthContext)
+    const {userAddress, loading} = React.useContext(AuthContext)
 
     return (
         <>

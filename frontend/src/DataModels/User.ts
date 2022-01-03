@@ -1,42 +1,46 @@
 import {ethers, Signer} from 'ethers';
-import DeploymentState from "../artifacts/deployment-info/DeploymentState.json"
-import {getUserDoc, fbCreateDeal, fbDeletePendingDeal, getFirebaseDoc} from "../firebaseUtils"
-import DealData from './DealData';
+import {Deal} from './DealData';
 import PendingDealData from './PendingDealData';
 import DealFactory from '../artifacts/contracts/PogDeal.sol/DealFactory.json'
 import DealService from '../Services/DealService';
+import DatabaseService from '../Services/DatabaseService'
+import { DealParticipantAddresses } from './DealConfig';
+import DealMetadata from './DealMetadata';
+import SmartContractService from '../Services/SmartContractService';
 
 export default class User {
     address: string
-    signer?: Signer
-    name?: string
+    name: string
+    dealsWhereStartup: string[]
+    dealsWhereInvestor: string[]
+    pendingDealsWhereStartup: string[]
+    pendingDealsWhereInvestor: string[]
 
-    constructor(address: string, signer?: Signer, name?: string) {
+    constructor(address: string, 
+                name: string, 
+                dealsWhereStartup: string[], 
+                dealsWhereInvestor: string[], 
+                pendingDealsWhereStartup: string[],
+                pendingDealsWhereInvestor: string[]) {
         this.address = address
-        this.signer = signer
         this.name = name
-    }
-
-    async getUsername() {
-        let doc = await getUserDoc(DeploymentState.firebaseCollection, this.address)
-        if (doc !== null) {
-            return doc.name
-        } else {
-            return ""
-        }
+        this.dealsWhereStartup = dealsWhereStartup
+        this.dealsWhereInvestor = dealsWhereInvestor
+        this.pendingDealsWhereStartup = pendingDealsWhereStartup
+        this.pendingDealsWhereInvestor = pendingDealsWhereInvestor
     }
 
     async createIfNecessary() {
-        await getUserDoc(DeploymentState.firebaseCollection, this.address)
+        await DatabaseService.getUser(this.address)
     }
 
     async getDealsWhereStartup() {
-        let result: DealData[] = []
-        let doc = await getUserDoc(DeploymentState.firebaseCollection, this.address)
-        if (doc !== null) {
-            let addresses = doc.dealsWhereStartup
+        let result: Deal[] = []
+        let user = await DatabaseService.getUser(this.address)
+        if (user !== undefined && user.dealsWhereStartup !== undefined) {
+            let addresses = user.dealsWhereStartup
             for(var address of addresses) {
-                let deal = DealData.empty()
+                let deal = Deal.empty()
                 deal.dealAddress = address
                 await DealService.initWithFirebase(deal)
                 result.push(deal)
@@ -47,28 +51,27 @@ export default class User {
 
     async getPendingDealsWhereStartup() {
         let result: PendingDealData[] = []
-        let doc = await getUserDoc(DeploymentState.firebaseCollection, this.address)
-        if (doc !== null) {
-            let pendingDeals = doc.pendingDealsWhereStartup
-            console.log(pendingDeals)
+        let user = await DatabaseService.getUser(this.address)
+        if (user !== undefined && user.pendingDealsWhereStartup !== undefined) {
+            let pendingDeals: any = user.pendingDealsWhereStartup
             for(let transactionHash in pendingDeals) {
                 let name = pendingDeals[transactionHash]['name']
                 let startupAddress = pendingDeals[transactionHash]['startupAddress']
                 let deal = new PendingDealData(name, startupAddress, transactionHash)
                 result.push(deal)
-                resolvePendingDeal(deal, this.address, true, name, this.signer!)
+                resolvePendingDeal(deal, this.address, name)
             }
         } 
         return result
     }
 
     async getDealsWhereInvestor() {
-        let result: DealData[] = []
-        let doc = await getUserDoc(DeploymentState.firebaseCollection, this.address)
-        if (doc !== null) {
-            let addresses = doc.dealsWhereInvestor
+        let result: Deal[] = []
+        let user = await DatabaseService.getUser(this.address)
+        if (user !== undefined && user.dealsWhereInvestor !== undefined) {
+            let addresses = user.dealsWhereInvestor
             for(var address of addresses) {
-                let deal = DealData.empty()
+                let deal = Deal.empty()
                 deal.dealAddress = address
                 await DealService.initWithFirebase(deal)
                 result.push(deal)
@@ -79,26 +82,27 @@ export default class User {
 
     async getPendingDealsWhereInvestor() {
         let result: PendingDealData[] = []
-        let doc = await getUserDoc(DeploymentState.firebaseCollection, this.address)
-        if (doc !== null) {
-            let pendingDeals = doc.pendingDealsWhereInvestor
-            console.log(pendingDeals)
+        let user = await DatabaseService.getUser(this.address)
+        if (user !== undefined && user.pendingDealsWhereInvestor !== undefined) {
+            let pendingDeals: any = user.pendingDealsWhereInvestor
             for(let transactionHash in pendingDeals) {
                 let name = pendingDeals[transactionHash]['name']
                 let startupAddress = pendingDeals[transactionHash]['startupAddress']
                 let deal = new PendingDealData(name, startupAddress, transactionHash)
                 result.push(deal)
-                resolvePendingDeal(deal, this.address, false, name, this.signer!)
+                resolvePendingDeal(deal, this.address, name)
             }
         } 
         return result
     }
 
-    isStartup(inDeal: DealData) {
+    isStartup(inDeal: Deal) {
+        console.log(this.address)
+        console.log(inDeal.startup.address)
         return (this.address == inDeal.startup.address) 
     }
 
-    isInvestor(inDeal: DealData) {
+    isInvestor(inDeal: Deal) {
         for (var investor of inDeal.investors) {
             if (this.address == investor.address) {
                 return true
@@ -107,14 +111,18 @@ export default class User {
         return false
     }
 
-    static empty() {
-        return new User("")
+    static empty(address?: string) {
+        if (address === undefined ) {
+            return new User("", "", [], [], [], [])
+        } else {
+            return new User(address, "", [], [], [], [])
+        }
     }
 }
 
 // Helpers
 
-async function resolvePendingDeal(dealData: PendingDealData, creatorAddress: string, creatorIsStartup: boolean, dealName: string, signer: Signer) {
+async function resolvePendingDeal(dealData: PendingDealData, creatorAddress: string, dealName: string) {
 
     let transactionHash = dealData.transactionHash
     let startupAddress = dealData.startupAddress
@@ -125,44 +133,20 @@ async function resolvePendingDeal(dealData: PendingDealData, creatorAddress: str
     }
     const provider = new ethers.providers.Web3Provider(ethereum)
 
-    let receipt = await provider.getTransactionReceipt(transactionHash)
-    if (!receipt) {
+    let dealAddress = await SmartContractService.getDealAddressFromTransactionHash(transactionHash, creatorAddress, provider)
+        
+    if (dealAddress === undefined) {
         return
+    } else {
+        let dealParticipants = new DealParticipantAddresses(creatorAddress, startupAddress)
+        await DatabaseService.recordDeal(
+            new DealParticipantAddresses(creatorAddress, startupAddress),
+            new DealMetadata(dealName, dealAddress)
+        )
+
+        await DatabaseService.removePendingDealRecord(
+            dealParticipants,
+            transactionHash
+        )
     }
-    console.log(receipt)
-    const metadata = await getFirebaseDoc(DeploymentState.firebaseCollection, "metadata")
-    console.log(metadata)
-    const contract = new ethers.Contract(metadata!.dealFactory_addr, DealFactory.abi, signer)
-
-    const filter = contract.filters.DealCreated(creatorAddress);
-    const events = await contract.queryFilter(filter, receipt.blockHash)
-
-    for (let eventData of events) {
-        if (eventData.event == "DealCreated") {
-            console.log(eventData.args)
-
-            // index 0 is the address of the deal creator 
-            let dealAddress = (eventData as any).args[1]
-            let dealData = DealData.empty()
-            dealData.dealAddress = dealAddress
-            dealData.name = dealName
-            await fbCreateDeal(DeploymentState.firebaseCollection, creatorAddress, startupAddress, dealAddress, {"name": dealData.name!})
-            await fbDeletePendingDeal(
-                DeploymentState.firebaseCollection,
-                creatorAddress,
-                transactionHash,
-                creatorIsStartup
-            )
-
-            return
-        }
-    }
-
-    // const receipt = await transaction.wait()
-    // for (let eventData of receipt.events) {
-    //     if (eventData.event == "DealCreated") {
-    //         console.log(eventData.args)
-    //         await fbCreateDeal(DeploymentState.firebaseCollection, validatedStartupAddress, eventData.args[0], {"name": dealData.name!})
-    //     }
-    // }
 }

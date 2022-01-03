@@ -60,14 +60,13 @@ function CreateDealButton() {
 
 function ProfileButton() {
   let history = useHistory()
-  const {user, loading} = React.useContext(AuthContext)
+  const {userAddress, loading} = React.useContext(AuthContext)
   return (
     <IconButton
       aria-label = "Profile"
       isRound = {true}
       onClick = {() => {
-        console.log("hello")
-        if (user) {
+        if (userAddress) {
           history.push("/account")
         } else {
           history.push("/login")

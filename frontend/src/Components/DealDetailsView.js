@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {ethers} from 'ethers';
 import {useLocation, useHistory} from 'react-router-dom'
-import DealData from '../DataModels/DealData';
 import {
     Alert,
     AlertDescription,
@@ -33,11 +32,17 @@ import {
   
 import {AuthContext} from "../Context/AuthContext"
 import DealService from '../Services/DealService';
-import { fbSignIn } from "../firebaseUtils"
+import AuthService from '../Services/AuthService'
+import DatabaseService from '../Services/DatabaseService';
+import User from "../DataModels/User"
 
 
 function DealDetailsView(props) {
-    const {user, loading} = React.useContext(AuthContext)
+    const {userAddress, loading} = React.useContext(AuthContext)
+    var user = undefined
+    if (userAddress) {
+        user = User.empty(userAddress)
+    } 
     let history = useHistory()
     const search = useLocation().search
     const dealAddress  = new URLSearchParams(search).get('address')
@@ -153,8 +158,16 @@ function DealDetailsView(props) {
         }
     }
 
+    function displayString(value, defaultString) {
+        if (value === undefined) {
+            return defaultString
+        } else {
+            return value.toString()
+        }
+    }
+
     useEffect(() => { fetchDeal(); }, []);
-    console.log(user, loading)
+    console.log(userAddress, loading)
     return(
         <Container maxW="container.xl" p={0}>
             <Flex position="fixed" top='0px' backgroundColor="white" w="container.xl" >
@@ -175,7 +188,7 @@ function DealDetailsView(props) {
             <Heading size="2xl">Deal Details</Heading>
             </VStack>
             {!user && !loading && 
-                <Button onClick={() => fbSignIn(window.ethereum)}>
+                <Button onClick={() => AuthService.fbSignIn(window.ethereum)}>
                     Connect Metamask to Participate
                 </Button>
             }
@@ -217,18 +230,18 @@ function DealDetailsView(props) {
 
                         <GridItem colSpan={1}>
                             <Heading size="l"> Startup token address </Heading>
-                                {dealData.startupTokenAddress}                     
+                                {displayString(dealData.startupTokenAddress, "Not set")}                     
                         </GridItem>
             
                         <GridItem colSpan={1}>
                             <Heading size="l"> Price per token (eth) </Heading>
-                                {dealData.ethPerToken.toString() }                    
+                                {displayString(dealData.ethPerToken, "Not set") }                    
                         </GridItem>
 
 
                         <GridItem colSpan={1}>
                             <Heading size="l"> Tokens in contract </Heading>
-                                    <div>{dealData.tokensInContract}</div>                    
+                                    <div>{displayString(dealData.tokensInContract, "N/A")}</div>                    
                         </GridItem>
 
     
@@ -355,7 +368,7 @@ function DealDetailsView(props) {
                         <Heading size="l"> 
                             NFT Token Address 
                         </Heading>
-                        {dealData.gateToken} 
+                        {displayString(dealData.gateToken, "Not set")} 
                     </GridItem>
                      
                 </SimpleGrid>
