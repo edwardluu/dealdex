@@ -1,10 +1,10 @@
-import logo from './logo.svg'
 import './App.css'
 import AccountView from './Components/AccountView'
 import MakeDealForm from './Components/MakeDealForm'
 import Nav from './Components/Nav'
-import {BrowserRouter as Router, Switch, Route, withRouter} from 'react-router-dom'
-import { ChakraProvider, theme  } from '@chakra-ui/react'
+import { Switch, Route, withRouter} from 'react-router-dom'
+import { ChakraProvider } from '@chakra-ui/provider'
+import theme from './Utils/DealDexTheme.js'
 
 import DealDetailsView from './Components/DealDetailsView'
 import PrivateRoute from "./Utils/PrivateRoute"
