@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 
 import { Flex, Container } from "@chakra-ui/react";
 import { Button, VStack, Heading, Text, Box, Wrap, WrapItem, Table, Thead, Tbody, Tr, Th, Td, Badge } from "@chakra-ui/react";
-import { ReactComponent as Logo } from "./DealDexLogo.svg";
+import { ReactComponent as Logo } from "../assets/icon/DealDexLogo.svg";
 
 import DealService from "../Services/DealService";
 

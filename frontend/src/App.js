@@ -4,7 +4,7 @@ import MakeDealForm from './Components/MakeDealForm'
 import Nav from './Components/Nav'
 import { Switch, Route, withRouter} from 'react-router-dom'
 import { ChakraProvider } from '@chakra-ui/provider'
-import theme from './Utils/CustomTheme.js'
+import theme from './Utils/DealDexTheme.js'
 
 
 import DealDetailsView from './Components/DealDetailsView'

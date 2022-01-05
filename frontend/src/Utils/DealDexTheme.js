@@ -4,8 +4,8 @@ import { extendTheme } from "@chakra-ui/react"
 
 // declare a variable for fonts and set our fonts. I am using Inter with various backups but you can use `Times New Roman`. Note we can set different fonts for the body and heading.
 
-// declare a variable for our theme and pass our overrides in the e`xtendTheme` method from chakra
-const customTheme = extendTheme({
+// declare a variable for our theme and pass our overrides in the extendTheme method from chakra
+const DealDexTheme = extendTheme({
   fonts: {
     ...chakraTheme.fonts,
     body: "Inter",
@@ -14,4 +14,4 @@ const customTheme = extendTheme({
 })
 
 // export our theme
-export default customTheme
+export default DealDexTheme
