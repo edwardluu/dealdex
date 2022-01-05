@@ -86,7 +86,7 @@ const ListDeals = ({ data = [] }) => {
     const diffInSeconds = Math.abs(dateDeadline - now) / 1000;
     const days = Math.floor(diffInSeconds / 60 / 60 / 24);
     if (days > 0) {
-      return ( <Text>{days} left</Text>)
+      return ( <Text>{days}d left</Text>)
     } else {
       return ( <Text color="#E53E3E">Passed</Text>)
     }
