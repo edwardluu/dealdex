@@ -1,7 +1,4 @@
 import './App.css'
-import AccountView from './Components/AccountView'
-import MakeDealForm from './Components/MakeDealForm'
-import Nav from './Components/Nav'
 import { Switch, Route, withRouter} from 'react-router-dom'
 import { ChakraProvider } from '@chakra-ui/provider'
 import theme from './Utils/DealDexTheme.js'
@@ -11,6 +8,9 @@ import PrivateRoute from "./Utils/PrivateRoute"
 import {AuthProvider} from "./Context/AuthContext"
 import LoginView from "./Components/LoginView"
 import HomeView from "./Components/HomeView"
+import AccountView from './Components/AccountView'
+import MakeDealForm from './Components/MakeDealForm'
+import Nav from './Components/Nav'
 
 function App() {
   return (
@@ -27,9 +27,13 @@ function App() {
               <MakeDealForm />
             </Route>
 
-            <PrivateRoute path="/account" >
+            {/* <PrivateRoute path="/account" >
               <AccountView  />
-            </PrivateRoute>
+            </PrivateRoute> */}
+
+            <Route path="/account" >
+              <AccountView  />
+            </Route>
             <Route path="/dealDetails" component={DealDetailsView} />
             <Route path="/login" component={LoginView} />
           </Switch>
