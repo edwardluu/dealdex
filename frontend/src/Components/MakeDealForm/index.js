@@ -31,12 +31,13 @@ import {useHistory} from "react-router-dom"
 
 import DealFormStep1 from './DealFormStep1';
 import DealFormStep2 from './DealFormStep2';
+import DealFormStep3 from './DealFormStep3';
 import StepsComponent from './StepsComponent';
 
 function MakeDealForm(props) {
     // This is doubling as the display variable so 'none' is the only valid default value
     const [dealData, setDealData] = useState(Deal.empty());
-    const [activeStep, setActiveStep] = useState(1);
+    const [activeStep, setActiveStep] = useState(3);
 
     const logined = true;
 
@@ -79,8 +80,9 @@ function MakeDealForm(props) {
                         direction={{ base: 'column-reverse', md: 'cloumn' }}
                         >
                         <Box p={10} borderRadius={4} borderColor='#E2E8F0' borderWidth={1}>
-                            {(activeStep === 1) &&<DealFormStep1 nextStep={handleNextStep}/>}
+                            {(activeStep === 1) &&<DealFormStep1 dealData={dealData} setDealData={setDealData} nextStep={handleNextStep}/>}
                             {(activeStep === 2) &&<DealFormStep2 nextStep={handleNextStep}/>}
+                            {(activeStep === 3) &&<DealFormStep3 dealData={dealData} setDealData={setDealData} nextStep={handleNextStep} prevStep={handlePrevStep}/>}
                         </Box>
                     </Flex> : <Flex
                         h={{ base: 'auto' }}

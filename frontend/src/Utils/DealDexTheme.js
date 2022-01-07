@@ -62,6 +62,37 @@ const DealDexTheme = extendTheme({
           lineHeight: "129%",
           size:'lg'
         },
+        dealformAdd: {
+          background: "white",
+          color: "#7879F1",
+          border: "1px solid #7879F1",
+          mt: "0px",
+          width: "299px",
+          fontWeight: "600",
+          fontSize: "18px",
+          lineHeight: "129%",
+          size:'lg'
+        },
+        dealformBack: {
+          background: "white",
+          color: "#7879F1",
+          mt: "0px",
+          width: "80px",
+          fontWeight: "600",
+          fontSize: "18px",
+          lineHeight: "129%",
+          size:'lg'
+        },
+        dealform3Fee: {
+          background: "#7879F1",
+          color: "white",
+          mt: "0px",
+          width: "299px",
+          fontWeight: "600",
+          fontSize: "18px",
+          lineHeight: "129%",
+          size:'lg'
+        }
       },
     },
     Badge: {
@@ -100,6 +131,44 @@ const DealDexTheme = extendTheme({
         },
       },
     },
+    Container: {
+      variants: {
+        dealFormAlert: {
+          background: "#F7FAFC",
+          borderRadius: "4px",
+          border: "1px",
+          borderColor: "gray.200",
+          boxShadow: "base",
+          width: "100%",
+          margin: "0",
+          padding: "10px 20px",
+          textAlign: "left",
+          fontSize: "16px",
+        },
+      },
+    },
+    Text: {
+      variants: {
+        dealInputAppendix: {
+          width: "fit-content",
+          marginTop: "1px",
+          color: "#718096",
+          alignItems: "flex-start",
+          textAlign: "left",
+        },
+        dealFontWeight500: {
+          fontWeight: "500",
+        },
+        dealStepTitle: {
+          fontSize: "32px",
+          fontWeight: "bold",
+        },
+        dealStepDesc: {
+          alignItems: "flex-start",
+          textAlign: "left",
+        }
+      }
+    }
   },
 });
 
