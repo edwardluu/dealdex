@@ -17,6 +17,8 @@ class Deal {
     tokensInContract?: string
     ethInContract?: string
     gateToken?: string
+    tokenPrice?: number
+    vestPercent?: number
 
     constructor(startup: User, 
                 investors: User[], 
@@ -32,7 +34,9 @@ class Deal {
                 investmentDeadline?: Date,
                 tokensInContract?: string,
                 ethInContract?: string,
-                gateToken?: string) {
+                gateToken?: string,
+                tokenPrice?: number,
+                vestPercent?: number) {
         this.name = name
         this.dealAddress = dealAddress
         this.startup = startup
@@ -48,6 +52,8 @@ class Deal {
         this.tokensInContract = tokensInContract
         this.ethInContract = ethInContract
         this.gateToken = gateToken
+        this.tokenPrice = tokenPrice
+        this.vestPercent = vestPercent
     }
 
     static empty() {

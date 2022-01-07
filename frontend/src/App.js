@@ -1,6 +1,7 @@
 import './App.css'
 import { Switch, Route, withRouter} from 'react-router-dom'
 import { ChakraProvider } from '@chakra-ui/provider'
+import { MoralisProvider } from "react-moralis";
 import theme from './Utils/DealDexTheme.js'
 
 import DealDetailsView from './Components/DealDetailsView'
@@ -12,35 +13,34 @@ import AccountView from './Components/AccountView'
 import MakeDealForm from './Components/MakeDealForm'
 import Nav from './Components/Nav'
 
-let Moralis = require('moralis');
-const serverUrl = "https://lnfsknicm8rg.usemoralis.com:2053/server";
-const appId = "MTLvk9d6oeRVS6x9Nv92Kk4fxycQQUmRn3rcKX6m";
-Moralis.start({ serverUrl, appId });
+export const APP_ID = "U4597pIoac2usSt6amOxi7pnRlwRV8fL4fVrLOWi";
+export const SERVER_URL = "https://fspd6ypb2hac.usemoralis.com:2053/server";
 
 function App() {
   return (
     <AuthProvider>
       <div className="App">
-        <ChakraProvider theme={theme} options={{useSystemColorMode: true}}>        
-          <Nav />
-          <Switch>
-            <Route path="/" exact>
-              <HomeView />
-            </Route>
+        <MoralisProvider appId={APP_ID} serverUrl={SERVER_URL}>
+          <ChakraProvider theme={theme} options={{useSystemColorMode: true}}>        
+            <Nav />
+            <Switch>
+              <Route path="/" exact>
+                <HomeView />
+              </Route>
 
-            <Route path="/createDeal" >
-              <MakeDealForm />
-            </Route>
+              <Route path="/createDeal" >
+                <MakeDealForm />
+              </Route>
 
-            <PrivateRoute path="/account" >
-              <AccountView  />
-            </PrivateRoute>
-            
-            <Route path="/dealDetails" component={DealDetailsView} />
-            <Route path="/login" component={LoginView} />
-          </Switch>
-        
-        </ChakraProvider>
+              <PrivateRoute path="/account" >
+                <AccountView  />
+              </PrivateRoute>
+              <Route path="/dealDetails" component={DealDetailsView} />
+              <Route path="/login" component={LoginView} />
+            </Switch>
+          
+          </ChakraProvider>
+        </MoralisProvider>
       </div>
     </AuthProvider>
   );

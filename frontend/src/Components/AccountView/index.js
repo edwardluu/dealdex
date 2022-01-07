@@ -9,6 +9,9 @@ import DatabaseService from "../../Services/DatabaseService";
 
 import { ConvertAddress } from '../../Utils/FunctionUtils'
 
+import {APP_ID, SERVER_URL} from "../../App";
+import { useMoralis } from "react-moralis";
+
 function AccountView(props) {
   const { userAddress, loading } = React.useContext(AuthContext);
   const [dealsWhereStartup, setDealsWhereStartup] = useState([]);
@@ -18,10 +21,13 @@ function AccountView(props) {
   const [username, setUsername] = useState("");
   const [isEditUsername, setIsEditUsername] = useState(false);
 
+  const { Moralis } = useMoralis();
+
   // https://stackoverflow.com/questions/10970078/modifying-a-query-string-without-reloading-the-page
   // Use this to update the url
   
   useEffect(() => {
+    Moralis.start({ SERVER_URL, APP_ID });
     async function fetchDeals() {
       try {
         let user = await DatabaseService.getUser(userAddress);
