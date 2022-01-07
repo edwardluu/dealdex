@@ -121,6 +121,10 @@ const DealDexTheme = extendTheme({
           borderColor: "iris.80",
           size: 'xs',
           borderRadius: "6px"
+        },
+        saveUserName: {
+          background: "iris.80",
+          color: "white",
         }
       },
     },

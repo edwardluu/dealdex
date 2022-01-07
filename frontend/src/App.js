@@ -12,6 +12,11 @@ import AccountView from './Components/AccountView'
 import MakeDealForm from './Components/MakeDealForm'
 import Nav from './Components/Nav'
 
+let Moralis = require('moralis');
+const serverUrl = "https://lnfsknicm8rg.usemoralis.com:2053/server";
+const appId = "MTLvk9d6oeRVS6x9Nv92Kk4fxycQQUmRn3rcKX6m";
+Moralis.start({ serverUrl, appId });
+
 function App() {
   return (
     <AuthProvider>
@@ -27,13 +32,10 @@ function App() {
               <MakeDealForm />
             </Route>
 
-            {/* <PrivateRoute path="/account" >
+            <PrivateRoute path="/account" >
               <AccountView  />
-            </PrivateRoute> */}
-
-            <Route path="/account" >
-              <AccountView  />
-            </Route>
+            </PrivateRoute>
+            
             <Route path="/dealDetails" component={DealDetailsView} />
             <Route path="/login" component={LoginView} />
           </Switch>
