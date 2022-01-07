@@ -1,10 +1,16 @@
 import { extendTheme } from "@chakra-ui/react";
 
 const DealDexTheme = extendTheme({
+  colors: {
+    iris: {
+      80: "#7879F1",
+      100: "#5D5FEF",
+    }
+  },
   layerStyles: {
     dealTableWrap: {
       width: "610px",
-      height: "277px",
+      height: "auto",
       borderRadius: "4px",
       padding: "26px 40px 55px",
       border: "1px",
@@ -12,6 +18,10 @@ const DealDexTheme = extendTheme({
       boxShadow: "base",
       textAlign: "left",
     },
+    checkboxVerifyWrap: {
+      right: "-5px",
+      top:" -5px",
+    }
   },
   textStyles: {
     title: {
@@ -45,6 +55,42 @@ const DealDexTheme = extendTheme({
       lineHeight: "150%",
       color: "gray.500",
     },
+    account: {
+      fontSize: "30px",
+      fontWeight: "700",
+      lineHeight: "120%",
+      color: "black",
+    },
+    addressWallet: {
+      fontSize: "18px",
+      fontWeight: "600",
+      lineHeight: "129%",
+      color: "gray.500",
+    },
+    titleInvestment: {
+      fontSize: "36px",
+      fontWeight: "700",
+      lineHeight: "120%",
+      color: "black",
+    },
+    subTitleInvestment: {
+      fontSize: "20px",
+      fontWeight: "700",
+      lineHeight: "120%",
+      color: "blackAlpha.500",
+    },
+    investmentMessages: {
+      fontSize: "12px",
+      fontWeight: "600",
+      lineHeight: "110%",
+      color: "gray.500",
+    },
+    titleInvestmentDeal: {
+      fontSize: "24px",
+      fontWeight: "700",
+      lineHeight: "133%",
+      color: "black",
+    },
     statusDeal: {
       color: "red.500"
     }
@@ -53,7 +99,7 @@ const DealDexTheme = extendTheme({
     Button: {
       variants: {
         dealCreate: {
-          background: "#7879F1",
+          background: "iris.80",
           color: "white",
           mt: "0px",
           width: "380px",
@@ -61,6 +107,24 @@ const DealDexTheme = extendTheme({
           fontSize: "18px",
           lineHeight: "129%",
           size:'lg'
+        },
+        accountEdit: {
+          mt: "0px",
+          width: "52px",
+          height: "20px",
+          background: "white",
+          color: "iris.80",
+          fontSize: "18px",
+          fontWeight: "600",
+          lineHeight: "129%",
+          border: "1px",
+          borderColor: "iris.80",
+          size: 'xs',
+          borderRadius: "6px"
+        },
+        saveUserName: {
+          background: "iris.80",
+          color: "white",
         },
         dealformAdd: {
           background: "white",
@@ -98,7 +162,7 @@ const DealDexTheme = extendTheme({
     Badge: {
       variants: {
         verified: {
-          background: "#5D5FEF",
+          background: "iris.80",
           color: "white",
         },
       },
@@ -107,7 +171,7 @@ const DealDexTheme = extendTheme({
       variants: {
         dealTable: {
           table: {
-            bg: "#F7FAFC",
+            bg: "gray.50",
             borderRadius: "4px",
             border: "1px",
             borderColor: "gray.200",
@@ -130,6 +194,30 @@ const DealDexTheme = extendTheme({
           },
         },
       },
+    },
+    Tabs: {
+      variants: {
+        dealAccountTab: {
+          tab: {
+            background: "white",
+            borderRadius: "9999px",
+            width: "auto",
+            height: '40px',
+            fontSize: "16px",
+            fontWeight: "600",
+            lineHeight: "124%",
+            color: "gray.600",
+            _selected: {
+              background: "iris.100",
+              color: "white",
+            }
+          },
+          tabpanel: {
+            py: "30px",
+            px: 0
+          }
+        }
+      }
     },
     Container: {
       variants: {
