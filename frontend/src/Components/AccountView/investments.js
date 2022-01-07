@@ -19,8 +19,8 @@ const DummyData = [
           isVerified: true,
         },
         myInvestmentAmount: 1500,
-        symbol: "USDC",
         status: "Claimed",
+        address: "0x4ea4e3621adb7051666958c6afe54f6db1a37d83"
       },
       {
         dealName: "CardStellar Series A",
@@ -29,8 +29,8 @@ const DummyData = [
           isVerified: true,
         },
         myInvestmentAmount: 20000,
-        symbol: "USDC",
         status: "Claimed",
+        address: "0x4ea4e3621adb7051666958c6afe54f6db1a37d83"
       },
     ],
   },
@@ -45,8 +45,8 @@ const DummyData = [
           isVerified: false,
         },
         myInvestmentAmount: 100000,
-        symbol: "USDC",
         status: "Claimable",
+        address: "0x4ea4e3621adb7051666958c6afe54f6db1a37d83"
       },
       {
         dealName: "CardStellar Series B",
@@ -55,8 +55,8 @@ const DummyData = [
           isVerified: true,
         },
         myInvestmentAmount: 20000,
-        symbol: "USDC",
         status: "Claimed",
+        address: "0x4ea4e3621adb7051666958c6afe54f6db1a37d83"
       },
     ],
   },
@@ -70,7 +70,7 @@ const Investments = ({ userAddress = "" }) => {
   useEffect(() => {
     async function testnetNFTs() {
       try {
-        const options = { chain: "mainnet", address: userAddress };
+        const options = { chain: "testnet", address: userAddress };
         const { result = [] } = await Moralis.Web3API.account.getNFTs(options);
         setNFTs(result);
       } catch (err) {
@@ -143,7 +143,7 @@ const InvestmentsItems = ({ data = [] }) => {
                   </Flex>
                 </Td>
                 <Td>
-                  { RoundNumbers(item.myInvestmentAmount)} {item.symbol}
+                  { RoundNumbers(item.myInvestmentAmount)}  <Symbols tokenAddress={item.address} />
                 </Td>
                 <Td>
                   <Box color={item.status === "Claimable" ? "green.500" : "gray.700"}>{item.status}</Box>
@@ -156,3 +156,20 @@ const InvestmentsItems = ({ data = [] }) => {
     </>
   );
 };
+
+const Symbols = ({tokenAddress}) => {
+  const [symbol, setSymbol] = useState('')
+
+  useEffect(()=> {
+    async function getTokenMetadata() {
+      const option = { chain: "testnet", addresses: tokenAddress };
+      const tokenMetadata = await Moralis.Web3API.token.getTokenMetadata(option);
+      return setSymbol(tokenMetadata[0].symbol);
+    }
+    getTokenMetadata()
+  }, [tokenAddress])
+
+  return (
+    <>{symbol}</>
+  )
+}
