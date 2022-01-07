@@ -169,7 +169,5 @@ const Symbols = ({tokenAddress}) => {
     getTokenMetadata()
   }, [tokenAddress])
 
-  return (
-    <>{symbol}</>
-  )
+  return symbol
 }
