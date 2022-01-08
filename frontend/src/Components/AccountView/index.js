@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { AuthContext } from "../../Context/AuthContext";
 import { Flex, Container, Box, ButtonGroup, Button, HStack, VStack, Tabs, TabList, TabPanels, Tab, TabPanel, Input, FormControl, IconButton, Center } from "@chakra-ui/react";
-import { CheckIcon, CloseIcon } from '@chakra-ui/icons'
+import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 
-import InvestmentsTab from "./investments";
+import AccountInvestments from "./investments";
+import AccountDeals from "./deals";
 
 import DatabaseService from "../../Services/DatabaseService";
 
-import { ConvertAddress } from '../../Utils/FunctionUtils'
-
-import {APP_ID, SERVER_URL} from "../../App";
-import { useMoralis } from "react-moralis";
+import { ConvertAddress } from "../../Utils/ComponentUtils";
 
 function AccountView(props) {
   const { userAddress, loading } = React.useContext(AuthContext);
@@ -20,14 +18,10 @@ function AccountView(props) {
   const [pendingDealsWhereInvestor, setPendingDealsWhereInvestor] = useState([]);
   const [username, setUsername] = useState("");
   const [isEditUsername, setIsEditUsername] = useState(false);
-
-  const { Moralis } = useMoralis();
-
   // https://stackoverflow.com/questions/10970078/modifying-a-query-string-without-reloading-the-page
   // Use this to update the url
-  
+
   useEffect(() => {
-    Moralis.start({ SERVER_URL, APP_ID });
     async function fetchDeals() {
       try {
         let user = await DatabaseService.getUser(userAddress);
@@ -55,19 +49,24 @@ function AccountView(props) {
         <VStack w="full" h="full" p={0} alignItems="flex-start">
           <Box>
             <HStack spacing="10px" alignItems="center">
-              {
-               isEditUsername ? <EditUserInput username={username} setUsername={setUsername} setIsEditUsername={setIsEditUsername}/> : 
-               (<>
-               <Box textStyle="account">{username}</Box> 
-               <Button variant="accountEdit" onClick={() => setIsEditUsername(true)} >Edit</Button>
-               </>)
-              } 
+              {isEditUsername ? (
+                <EditUserInput username={username} setUsername={setUsername} setIsEditUsername={setIsEditUsername} />
+              ) : (
+                <>
+                  <Box textStyle="account">{username}</Box>
+                  <Button variant="accountEdit" onClick={() => setIsEditUsername(true)}>
+                    Edit
+                  </Button>
+                </>
+              )}
             </HStack>
-            <Box textAlign="left" textStyle="addressWallet">{ ConvertAddress(userAddress) }</Box>
+            <Box textAlign="left" textStyle="addressWallet">
+              <ConvertAddress address={userAddress} />
+            </Box>
           </Box>
 
           <Box>
-            <Tabs mt={50} variant="dealAccountTab" >
+            <Tabs mt={50} variant="dealAccountTab">
               <TabList>
                 <Tab>Investments</Tab>
                 <Tab ml={20}>Deals</Tab>
@@ -75,10 +74,10 @@ function AccountView(props) {
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  <InvestmentsTab userAddress={userAddress}/>
+                  <AccountInvestments userAddress={userAddress} />
                 </TabPanel>
                 <TabPanel>
-                  <p>Deals!</p>
+                  <AccountDeals />
                 </TabPanel>
                 <TabPanel>
                   <p>Projects!</p>
@@ -94,35 +93,33 @@ function AccountView(props) {
 
 export default AccountView;
 
-
 const EditUserInput = (props) => {
-  const [input, setInput] = useState(props.username)
+  const [input, setInput] = useState(props.username);
 
-  const handleInputChange = (e) => setInput(e.target.value)
+  const handleInputChange = (e) => setInput(e.target.value);
 
-  const isError = input === ''
-
+  const isError = input === "";
 
   const onSaveUserNanme = () => {
-    if (!input ) return 
-    props.setUsername(input)
-    props.setIsEditUsername(false)
-  }
+    if (!input) return;
+    props.setUsername(input);
+    props.setIsEditUsername(false);
+  };
 
   return (
     <FormControl isInvalid={isError}>
       <Flex>
-        <Input
-          id='userName'
-          placeholder='Edit User Name' size='md'
-          value={input}
-          onChange={handleInputChange}
-        />
-        <ButtonGroup ml={2} alignItems="center" justifyContent='center' size='md'>
-          <IconButton onClick={onSaveUserNanme} variant="saveUserName" icon={<CheckIcon />}  />
-          <IconButton icon={<CloseIcon />} onClick={()=> { props.setIsEditUsername(false)}} />
+        <Input id="userName" placeholder="Edit User Name" size="md" value={input} onChange={handleInputChange} />
+        <ButtonGroup ml={2} alignItems="center" justifyContent="center" size="md">
+          <IconButton onClick={onSaveUserNanme} variant="saveUserName" icon={<CheckIcon />} />
+          <IconButton
+            icon={<CloseIcon />}
+            onClick={() => {
+              props.setIsEditUsername(false);
+            }}
+          />
         </ButtonGroup>
       </Flex>
     </FormControl>
-  )
-}
+  );
+};
