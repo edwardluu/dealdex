@@ -24,7 +24,8 @@ function DealFormStep2(props) {
     const [tokenPrice, setTokenPrice] = useState([]);
     const [tokenMetadata, setTokenMetadata] = useState([]);
     const [appendUnit, setAppendUnit] = useState('USDC');
-    const [enableButton, setEnableButton] = useState(false);
+    const [enableButton, setEnableButton] = useState(true);
+    const [clickedSubmitButton, setClickedSubmitButton] = useState(false);
 
     const {
         authenticate,
@@ -41,6 +42,7 @@ function DealFormStep2(props) {
     }       
 
     const handleNextStep = () => {
+        setClickedSubmitButton(true);
         props.nextStep();
     }
 
@@ -118,6 +120,12 @@ function DealFormStep2(props) {
         }
     }, [props.dealData.paymentToken]);
 
+    useEffect(()=>{
+        if (nftTokenMetadata.validated !== undefined && tokenMetadata.validated !== undefined && props.dealData.investDeadline) {
+            setEnableButton(false);
+        }
+    }, [props.dealData.ethNFTPerToken, props.dealData.paymentToken, props.dealData.investDeadline]);
+
     return (
         <GridItem colSpan={2} >
             <VStack w="65%" h="full" spacing={10} alignItems="flex-start">
@@ -193,6 +201,8 @@ function DealFormStep2(props) {
                         parseFuc = {parse}
                         appendChar = {appendUnit}
                         isRequired = {true}
+                        verified = {(props.dealData.minRoundSize !== 0 && !clickedSubmitButton)}
+                        errorText = "Specify a payment token before round size."
                         helperText = "The minimum amount of the payment token that needs to be raised. If the minimum round size is not reached, any investor can claim a refund."
                     />
                     <MakeDealFormNumberItem 
@@ -209,6 +219,7 @@ function DealFormStep2(props) {
                         parseFuc = {parse}
                         appendChar = {appendUnit}
                         isRequired = {true}
+                        verified = {!clickedSubmitButton}
                         helperText = "The maximum amount of the payment token that can be raised by this deal."
                     />
                 </HStack>
@@ -230,6 +241,7 @@ function DealFormStep2(props) {
                         parseFuc = {parse}
                         appendChar = {appendUnit}
                         isRequired = {true}
+                        verified = {!clickedSubmitButton}
                         helperText = "The minimum amount of the payment token required by each investor/NFT."
                     />
                     <MakeDealFormNumberItem 
@@ -246,6 +258,7 @@ function DealFormStep2(props) {
                         formatFuc = {format}
                         parseFuc = {parse}
                         appendChar = {appendUnit}
+                        verified = {!clickedSubmitButton}
                         helperText = "The maximum amount of the payment token allowed for each investor/NFT."
                     />
                 </HStack>
@@ -263,6 +276,7 @@ function DealFormStep2(props) {
                         width="47%"
                         dateformat = {true}
                         isRequired = {true}
+                        verified = {props.dealData.investDeadline && props.dealData.investDeadline.length > 0}
                         helperText = "Deadline to invest by (UTC time)"
                     />
                 </HStack>

@@ -21,6 +21,7 @@ import {
     NumberInputStepper,
     NumberIncrementStepper,
     NumberDecrementStepper,
+    FormErrorMessage,
 } from '@chakra-ui/react';
 import { CalendarIcon, CheckCircleIcon } from '@chakra-ui/icons';
 
@@ -115,21 +116,19 @@ export function MakeDealFormItem(props) {
 
     return (
         <>
-            <FormControl isRequired={isRequired} pt={5} width={props.width}>
+            <FormControl isRequired={isRequired} isInvalid={!props.verified && isRequired && value} pt={5} width={props.width}>
                 <FormLabel>{title}</FormLabel> 
                 <InputGroup>
                 <Input 
-                        onChange={onChange}
-                        placeholder={placeholder}
-                        //value={value}
-                    />
+                    onChange={onChange}
+                    placeholder={placeholder}
+                    //value={value}
+                />
                 {(isRequired && props.verified) && <InputRightElement children={<CheckCircleIcon color="#7879F1"/>} />}
                 {/* {props.dateformat && <InputRightElement children={<IconButton aria-label='Search database' icon={<CalendarIcon />} />} />} */}
                 {props.dateformat && <InputRightElement children={<CalendarIcon color="#2D3748"/>} />}
                 </InputGroup>
-                {(!props.verified && errorText && (value && value.length > 0)) &&
-                    <FormHelperText textAlign="left" fontSize="16px" color="#E53E3E" >{errorText}</FormHelperText>
-                }
+                <FormErrorMessage textAlign="left" fontSize="16px">{errorText}</FormErrorMessage>
                 {helperText &&
                     <FormHelperText textAlign="left" fontSize="16px" >{helperText}</FormHelperText>
                 }
@@ -144,6 +143,7 @@ export function MakeDealFormNumberItem(props) {
     let onChange = props.onChange
     let placeholder = props.placeholder
     let helperText = props.helperText
+    let errorText = props.errorText
     let value = props.value
     var isRequired 
     if (props.isRequired) {
@@ -154,7 +154,7 @@ export function MakeDealFormNumberItem(props) {
 
     return (
         <>
-            <FormControl isRequired={isRequired} pt={5} width={props.width}>
+            <FormControl isRequired={isRequired} isInvalid={!props.verified && isRequired && value} pt={5} width={props.width}>
                 <FormLabel>{title}</FormLabel> 
                 <NumberInput 
                     value={props.parsing ? props.formatFuc(value) : value} 
@@ -173,6 +173,7 @@ export function MakeDealFormNumberItem(props) {
                         <NumberDecrementStepper />
                     </NumberInputStepper>
                 </NumberInput>
+                <FormErrorMessage textAlign="left" fontSize="16px">{errorText}</FormErrorMessage>
                 {helperText &&
                     <FormHelperText textAlign="left" fontSize="16px" >{helperText}</FormHelperText>
                 }
