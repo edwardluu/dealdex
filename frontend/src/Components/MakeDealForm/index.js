@@ -5,25 +5,24 @@ import DealService from '../../Services/DealService'
 import User from '../../DataModels/User'
 import { Flex, Container, Box, Center, ChakraProvider } from '@chakra-ui/react';
 import {
-    Alert,
-    AlertDescription,
-    AlertIcon,
-    AlertTitle,
     Button,
-    Checkbox,
-    CloseButton,
     FormControl,
     FormHelperText,
     FormLabel,
-    GridItem,
     Heading,
     Input,
-    Select,
-    SimpleGrid,
     Text,
-    useBreakpointValue,
     VStack,
-  } from '@chakra-ui/react';
+    InputGroup,
+    InputRightElement,
+    InputLeftElement,
+    NumberInput,
+    NumberInputField,
+    NumberInputStepper,
+    NumberIncrementStepper,
+    NumberDecrementStepper,
+} from '@chakra-ui/react';
+import { CalendarIcon, CheckCircleIcon } from '@chakra-ui/icons';
 
 import "react-datepicker/dist/react-datepicker.css";
 import {AuthContext} from "../../Context/AuthContext"
@@ -37,7 +36,7 @@ import StepsComponent from './StepsComponent';
 function MakeDealForm(props) {
     // This is doubling as the display variable so 'none' is the only valid default value
     const [dealData, setDealData] = useState(Deal.empty());
-    const [activeStep, setActiveStep] = useState(3);
+    const [activeStep, setActiveStep] = useState(2);
 
     const logined = true;
 
@@ -81,7 +80,7 @@ function MakeDealForm(props) {
                         >
                         <Box p={10} borderRadius={4} borderColor='#E2E8F0' borderWidth={1}>
                             {(activeStep === 1) &&<DealFormStep1 dealData={dealData} setDealData={setDealData} nextStep={handleNextStep}/>}
-                            {(activeStep === 2) &&<DealFormStep2 nextStep={handleNextStep}/>}
+                            {(activeStep === 2) &&<DealFormStep2 dealData={dealData} setDealData={setDealData} nextStep={handleNextStep} prevStep={handlePrevStep}/>}
                             {(activeStep === 3) &&<DealFormStep3 dealData={dealData} setDealData={setDealData} nextStep={handleNextStep} prevStep={handlePrevStep}/>}
                         </Box>
                     </Flex> : <Flex
@@ -96,6 +95,89 @@ function MakeDealForm(props) {
                     </Flex>
                 }
             </Container>
+    )
+}
+
+export function MakeDealFormItem(props) {
+    let title = props.title
+    let colSpan = props.colSpan
+    let onChange = props.onChange
+    let placeholder = props.placeholder
+    let value = props.value
+    let helperText = props.helperText
+    let errorText = props.errorText
+    var isRequired 
+    if (props.isRequired) {
+        isRequired = props.isRequired
+    } else {
+        isRequired = false
+    }
+
+    return (
+        <>
+            <FormControl isRequired={isRequired} pt={5} width={props.width}>
+                <FormLabel>{title}</FormLabel> 
+                <InputGroup>
+                <Input 
+                        onChange={onChange}
+                        placeholder={placeholder}
+                        //value={value}
+                    />
+                {(isRequired && props.verified) && <InputRightElement children={<CheckCircleIcon color="#7879F1"/>} />}
+                {/* {props.dateformat && <InputRightElement children={<IconButton aria-label='Search database' icon={<CalendarIcon />} />} />} */}
+                {props.dateformat && <InputRightElement children={<CalendarIcon color="#2D3748"/>} />}
+                </InputGroup>
+                {(!props.verified && errorText && (value && value.length > 0)) &&
+                    <FormHelperText textAlign="left" fontSize="16px" color="#E53E3E" >{errorText}</FormHelperText>
+                }
+                {helperText &&
+                    <FormHelperText textAlign="left" fontSize="16px" >{helperText}</FormHelperText>
+                }
+            </FormControl>
+        </>
+    )
+}
+
+export function MakeDealFormNumberItem(props) {
+    let title = props.title
+    let colSpan = props.colSpan
+    let onChange = props.onChange
+    let placeholder = props.placeholder
+    let helperText = props.helperText
+    let value = props.value
+    var isRequired 
+    if (props.isRequired) {
+        isRequired = props.isRequired
+    } else {
+        isRequired = false
+    }
+
+    return (
+        <>
+            <FormControl isRequired={isRequired} pt={5} width={props.width}>
+                <FormLabel>{title}</FormLabel> 
+                <NumberInput 
+                    value={props.parsing ? props.formatFuc(value) : value} 
+                    precision={1} 
+                    step={0.1} 
+                    min={0}
+                    max={props.maxvalue}
+                    onChange={onChange}
+                    placeholder={placeholder}
+                >
+                    <NumberInputField />
+                    {!(props.appendChar !== "%" && (value === "0.0" || value === ".0" || value === "0" || value === "0.")) && 
+                        <InputLeftElement ml={((value.length - 1) * 8.6 + 25) + "px"} width="fit-content" children={<Text variant="dealInputAppendix">{props.appendChar}</Text>} />}
+                    <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                    </NumberInputStepper>
+                </NumberInput>
+                {helperText &&
+                    <FormHelperText textAlign="left" fontSize="16px" >{helperText}</FormHelperText>
+                }
+            </FormControl>
+        </>
     )
 }
 
