@@ -124,7 +124,7 @@ export function MakeDealFormItem(props) {
                     placeholder={placeholder}
                     //value={value}
                 />
-                {(isRequired && props.verified) && <InputRightElement children={<CheckCircleIcon color="#7879F1"/>} />}
+                {(isRequired && props.verified && !props.dateformat) && <InputRightElement children={<CheckCircleIcon color="#7879F1"/>} />}
                 {/* {props.dateformat && <InputRightElement children={<IconButton aria-label='Search database' icon={<CalendarIcon />} />} />} */}
                 {props.dateformat && <InputRightElement children={<CalendarIcon color="#2D3748"/>} />}
                 </InputGroup>

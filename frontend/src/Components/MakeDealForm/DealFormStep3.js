@@ -174,6 +174,7 @@ function DealFormStep3(props) {
                     formatFuc = {formatCoin}
                     parseFuc = {parseCoin}
                     appendChar = {tokenPriceUnit}
+                    verified={true}
                     helperText = "The price of the project’s token. This can be updated by the project in the future."
                 />
             </HStack>

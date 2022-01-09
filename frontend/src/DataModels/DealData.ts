@@ -20,11 +20,11 @@ class Deal {
     maxRoundSize?: number                   // Step 2 - 4 item
     minInvestment?: number                  // Step 2 - 5 item
     maxInvestment?: number                  // Step 2 - 6 item
-    investDeadline?: string                 // Step 2 - 7 item
+    investDeadline?: Date                   // Step 2 - 7 item
     dealAddress?: string                    // Step 3 - 1 item
     tokenPrice?: number                     // Step 3 - 2 item
     ethPerToken?: string                    // Step 3 - 3 item
-    investmentDeadline?: Date               // Step 3 - 4 item
+    vestDate?: Date                         // Step 3 - 4 item
     vestPercent?: number                    // Step 3 - 5 item
 
     constructor(startup: User, 
@@ -38,7 +38,7 @@ class Deal {
                 maxInvestmentPerInvestor?: string,
                 minTotalInvestment?: string,
                 maxTotalInvestment?: string,
-                investmentDeadline?: Date,
+                vestDate?: Date,
                 tokensInContract?: string,
                 ethInContract?: string,
                 gateToken?: string,
@@ -50,7 +50,7 @@ class Deal {
                 maxRoundSize?: number,
                 minInvestment?: number,
                 maxInvestment?: number,
-                investDeadline?: string) {
+                investDeadline?: Date) {
         this.name = name
         this.dealAddress = dealAddress
         this.startup = startup
@@ -62,7 +62,7 @@ class Deal {
         this.maxInvestmentPerInvestor = maxInvestmentPerInvestor
         this.minTotalInvestment = minTotalInvestment
         this.maxTotalInvestment = maxTotalInvestment
-        this.investmentDeadline = investmentDeadline
+        this.vestDate = vestDate
         this.tokensInContract = tokensInContract
         this.ethInContract = ethInContract
         this.gateToken = gateToken
