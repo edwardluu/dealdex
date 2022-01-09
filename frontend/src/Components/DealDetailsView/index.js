@@ -226,7 +226,7 @@ function DealDetailsView(props) {
         fakeDeal.totalRasied = "1,200,000"
         fakeDeal.nftName = "BAYC"
         fakeDeal.verified = true;
-        fakeDeal.nftTokenArray = ['BAYC #8282', 'BAYC #7667', 'BAYC #7447', 'BAYC #3327'];
+        fakeDeal.nftTokenArray = ['0xdf7952b35f24acf7fc0487d01c8d5690a60dba07', '0xdf7952b35f24acf7fc0487d01c8d5690a60dba07', '0xdf7952b35f24acf7fc0487d01c8d5690a60dba07', '0xdf7952b35f24acf7fc0487d01c8d5690a60dba07'];
         setDealData(fakeDeal);
     }, []);
 
