@@ -13,6 +13,9 @@ import {useEffect, useState} from 'react';
 import { useMoralis } from "react-moralis";
 import {APP_ID, SERVER_URL} from "../../App";
 import {MakeDealFormItem, MakeDealFormNumberItem} from './index';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import './date-picker.css';
 
 function DealFormStep2(props) { 
     const format = (val) => val;
@@ -273,14 +276,15 @@ function DealFormStep2(props) {
                     <MakeDealFormItem 
                         title="Investment Deadline"
                         colSpan={2}
-                        onChange = {e => props.setDealData({ ...props.dealData, investDeadline: e.target.value})}
+                        onChange = {v => { console.log(v); props.setDealData({ ...props.dealData, vestDate: v})}}
                         placeholder = "Dec 26, 2021 07:14:31"
-                        value = {props.dealData.investDeadline}
+                        value = {props.dealData.vestDate}
                         onBlur = {e => formatInput(e)}
                         width="47%"
                         dateformat = {true}
+                        DatePicker={DatePicker}
                         isRequired = {true}
-                        verified = {props.dealData.investDeadline && props.dealData.investDeadline.length > 0}
+                        verified = {props.dealData.vestDate && props.dealData.vestDate.length > 0}
                         helperText = "Deadline to invest by (UTC time)"
                     />
                 </HStack>

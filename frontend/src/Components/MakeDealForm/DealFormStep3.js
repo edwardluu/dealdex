@@ -11,6 +11,9 @@ import { CalendarIcon, CheckCircleIcon, CloseIcon } from '@chakra-ui/icons';
 import {useEffect, useState} from 'react';
 import "react-datepicker/dist/react-datepicker.css";
 import {MakeDealFormItem, MakeDealFormNumberItem} from './index';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import './date-picker.css';
 
 import { useMoralis } from "react-moralis";
 //import Moralis from "moralis/types";
@@ -207,12 +210,13 @@ function DealFormStep3(props) {
                     <MakeDealFormItem 
                         title="Vest Date"
                         colSpan={2}
-                        onChange = {e => props.setDealData({ ...props.dealData, investmentDeadline: e.target.value})}
+                        onChange = {v => props.setDealData({ ...props.dealData, investmentDeadline: v})}
                         placeholder = "Dec 26, 2021 07:14:31"
                         value = {props.dealData.investmentDeadline}
                         onBlur = {e => formatInput(e)}
                         width="50%"
                         dateformat = {true}
+                        DatePicker={DatePicker}
                         helperText = "Date and time that the tokens will vest"
                     />
                     <MakeDealFormNumberItem 

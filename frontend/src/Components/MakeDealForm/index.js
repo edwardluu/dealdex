@@ -37,7 +37,7 @@ import StepsComponent from './StepsComponent';
 function MakeDealForm(props) {
     // This is doubling as the display variable so 'none' is the only valid default value
     const [dealData, setDealData] = useState(Deal.empty());
-    const [activeStep, setActiveStep] = useState(2);
+    const [activeStep, setActiveStep] = useState(3);
 
     const logined = true;
 
@@ -119,11 +119,20 @@ export function MakeDealFormItem(props) {
             <FormControl isRequired={isRequired} isInvalid={!props.verified && isRequired && value} pt={5} width={props.width}>
                 <FormLabel>{title}</FormLabel> 
                 <InputGroup>
-                <Input 
+                {props.dateformat ? 
+                    <props.DatePicker
+                    showPopperArrow={true}
+                    isClearable={true}
+                    dateFormat="MMM dd yyyy 00:00:00"
+                    selected={value}
+                    onChange={onChange}
+                    placeholder={placeholder}
+                    /> : 
+                    <Input 
                     onChange={onChange}
                     placeholder={placeholder}
                     //value={value}
-                />
+                />}
                 {(isRequired && props.verified && !props.dateformat) && <InputRightElement children={<CheckCircleIcon color="#7879F1"/>} />}
                 {/* {props.dateformat && <InputRightElement children={<IconButton aria-label='Search database' icon={<CalendarIcon />} />} />} */}
                 {props.dateformat && <InputRightElement children={<CalendarIcon color="#2D3748"/>} />}
