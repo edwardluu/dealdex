@@ -201,6 +201,7 @@ function DealFormStep2(props) {
                         parseFuc = {parse}
                         appendChar = {appendUnit}
                         isRequired = {true}
+                        disabled = {!(nftTokenMetadata && nftTokenMetadata.validated !== undefined)}
                         verified = {(props.dealData.minRoundSize !== 0 && !clickedSubmitButton)}
                         errorText = "Specify a payment token before round size."
                         helperText = "The minimum amount of the payment token that needs to be raised. If the minimum round size is not reached, any investor can claim a refund."
@@ -219,6 +220,7 @@ function DealFormStep2(props) {
                         parseFuc = {parse}
                         appendChar = {appendUnit}
                         isRequired = {true}
+                        disabled = {!(nftTokenMetadata && nftTokenMetadata.validated !== undefined)}
                         verified = {!clickedSubmitButton}
                         helperText = "The maximum amount of the payment token that can be raised by this deal."
                     />
@@ -241,6 +243,7 @@ function DealFormStep2(props) {
                         parseFuc = {parse}
                         appendChar = {appendUnit}
                         isRequired = {true}
+                        disabled = {!(nftTokenMetadata && nftTokenMetadata.validated !== undefined)}
                         verified = {!clickedSubmitButton}
                         helperText = "The minimum amount of the payment token required by each investor/NFT."
                     />
@@ -258,6 +261,7 @@ function DealFormStep2(props) {
                         formatFuc = {format}
                         parseFuc = {parse}
                         appendChar = {appendUnit}
+                        disabled = {!(nftTokenMetadata && nftTokenMetadata.validated !== undefined)}
                         verified = {!clickedSubmitButton}
                         helperText = "The maximum amount of the payment token allowed for each investor/NFT."
                     />

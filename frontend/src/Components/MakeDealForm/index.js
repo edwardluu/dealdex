@@ -164,6 +164,7 @@ export function MakeDealFormNumberItem(props) {
                     max={props.maxvalue}
                     onChange={onChange}
                     placeholder={placeholder}
+                    isDisabled={props.disabled}
                 >
                     <NumberInputField />
                     {!(props.appendChar !== "%" && (value === "0.0" || value === ".0" || value === "0" || value === "0.")) && 
