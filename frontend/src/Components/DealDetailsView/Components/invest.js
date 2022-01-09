@@ -9,10 +9,10 @@ function Invest(props) {
     const [nfts, setNFTs] = useState([]);
     useEffect(()=>{
         Moralis.start({ serverUrl: SERVER_URL, appId: APP_ID });  
-        getUseNFTs().then((nfts) => {  
-            console.log(nfts.result);          
-            setNFTs(nfts.result);
-        })
+        // getUseNFTs().then((nfts) => {  
+        //     console.log(nfts.result);          
+        //     setNFTs(nfts.result);
+        // })
     }, []);
     async function getUseNFTs() {
         //Get metadata for one token
