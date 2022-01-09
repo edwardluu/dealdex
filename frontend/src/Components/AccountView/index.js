@@ -5,6 +5,7 @@ import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 
 import AccountInvestments from "./investments";
 import AccountDeals from "./deals";
+import AccountProjects from './projects'
 
 import DatabaseService from "../../Services/DatabaseService";
 
@@ -80,7 +81,7 @@ function AccountView(props) {
                   <AccountDeals />
                 </TabPanel>
                 <TabPanel>
-                  <p>Projects!</p>
+                  <AccountProjects />
                 </TabPanel>
               </TabPanels>
             </Tabs>

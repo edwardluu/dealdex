@@ -93,6 +93,14 @@ const DealDexTheme = extendTheme({
     },
     statusDeal: {
       color: "red.500"
+    },
+    statusProjectMin: {
+      color:"red.300",
+      fontWeight:"700"
+    },
+    statusProjectOngoing: {
+      color:"green.700",
+      fontWeight:"700"
     }
   },
   components: {
