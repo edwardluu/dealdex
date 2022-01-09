@@ -23,7 +23,8 @@ function MyInvestment(props) {
         const options = { chain: "bsc", addresses: tokenAddress };
         const tokenMetadata = await Moralis.Web3API.token.getNFTMetadata(options);
         return tokenMetadata;
-    }useEffect(()=>{
+    }
+    useEffect(()=>{
         Moralis.start({ serverUrl: SERVER_URL, appId: APP_ID });  
     }, []);
     return (
