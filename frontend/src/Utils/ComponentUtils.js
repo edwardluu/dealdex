@@ -65,6 +65,7 @@ export const Symbols = ({ address }) => {
     async function getTokenMetadata() {
       const option = { chain: "testnet", addresses: address };
       const tokenMetadata = await Moralis.Web3API.token.getTokenMetadata(option);
+      if(tokenMetadata.length === 0 ) return
       return setSymbol(tokenMetadata[0].symbol);
     }
     getTokenMetadata();
@@ -91,4 +92,25 @@ export const NFTName = ({ address }) => {
   }, [address]);
 
   return NFTName;
+};
+
+export const NFTOwner = ({ address }) => {
+  const [NFTOwner, setNFTOnwer] = useState("");
+  const { Moralis } = useMoralis();
+
+  useEffect(() => {
+    Moralis.start({ serverUrl: SERVER_URL, appId: APP_ID });
+  }, []);
+
+  useEffect(() => {
+    async function getNFTMetadata() {
+      const option = { chain: "rinkeby", address: address };
+      const {result} = await Moralis.Web3API.token.getNFTOwners(option);
+      if(result.length === 0 ) return
+      return setNFTOnwer(result[0].name);
+    }
+    getNFTMetadata();
+  }, [address]);
+
+  return NFTOwner;
 };

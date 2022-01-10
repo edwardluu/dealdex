@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo } from "react";
 
-import { Flex, Box, VStack, Wrap, WrapItem, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
+import { Flex, Box, VStack, Wrap, WrapItem, Table, Thead, Tbody, Tr, Th, Td, Text } from "@chakra-ui/react";
 
-import { RoundNumbers, Symbols } from "../../Utils/ComponentUtils";
+import { RoundNumbers, Symbols, NFTOwner } from "../../Utils/ComponentUtils";
 
 import { APP_ID, SERVER_URL } from "../../App";
 import { useMoralis } from "react-moralis";
@@ -11,7 +11,7 @@ const DummyData = [
   {
     projectName: "Coders Arena",
     syndicateAddress: "Layer 1 Master",
-    projectNFT: "Meetbits",
+    contractNFT: "0x3eC9C3cB29Ed95A396A48a4fBDb6b8546d001D5A",
     fundsRaised: 12000000,
     address: "0xce769237a33ec9bc2d26b2ca18904aaae29a9569",
     status: "Minimum Not Met",
@@ -19,15 +19,23 @@ const DummyData = [
   {
     projectName: "Global Transfers",
     syndicateAddress: "Talent 01x",
-    projectNFT: "n Project",
+    contractNFT: "0xcC14dd8E6673fEE203366115D3f9240b079a4930",
     fundsRaised: 300,
     address: "0xbdbea2c43adaf5ec1f4afce4c6cbe59ab29ff7bb",
     status: "Closed",
   },
   {
     projectName: "Art Gallery Miami",
+    syndicateAddress: "Alpha Capital",
+    contractNFT: "0x3eC9C3cB29Ed95A396A48a4fBDb6b8546d001D5A",
+    fundsRaised: 2500000,
+    address: "0x4ea4e3621adb7051666958c6afe54f6db1a37d83",
+    status: "Ongoing",
+  },
+  {
+    projectName: "Art Gallery Miami",
     syndicateAddress: "Talent 01x",
-    projectNFT: "Satoshi",
+    contractNFT: "0x3eC9C3cB29Ed95A396A48a4fBDb6b8546d001D5A",
     fundsRaised: 2500000,
     address: "0x4ea4e3621adb7051666958c6afe54f6db1a37d83",
     status: "Ongoing",
@@ -80,7 +88,9 @@ const ListDeals = ({ data = [] }) => {
                 </Thead>
                 <Tbody>
                   <Tr>
-                    <Td>{item.projectNFT}</Td>
+                    <Td>
+                      <NFTOwner address={item.contractNFT} />
+                    </Td>
                     <Td>
                       <RoundNumbers num={item.fundsRaised} /> <Symbols address={item.address} />
                     </Td>
