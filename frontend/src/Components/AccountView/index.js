@@ -5,7 +5,10 @@ import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 
 import AccountInvestments from "./investments";
 import AccountDeals from "./deals";
+<<<<<<< HEAD
 import AccountProjects from './projects'
+=======
+>>>>>>> 660c20fdf246a23369112634ab6f00c9b277094a
 
 import DatabaseService from "../../Services/DatabaseService";
 

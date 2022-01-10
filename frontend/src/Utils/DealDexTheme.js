@@ -18,6 +18,15 @@ const DealDexTheme = extendTheme({
       boxShadow: "base",
       textAlign: "left",
     },
+    detailSummaryWrap: {
+      height: "auto",
+      borderRadius: "8px",
+      padding: "15px 20px",
+      border: "1px",
+      borderColor: "gray.200",
+      boxShadow: "base",
+      textAlign: "left",
+    },
     checkboxVerifyWrap: {
       right: "-5px",
       top:" -5px",
@@ -164,6 +173,43 @@ const DealDexTheme = extendTheme({
           fontSize: "18px",
           lineHeight: "129%",
           size:'lg'
+        },
+        dealDetailTabInvest: {
+          background: "white",
+          color: "black",
+          size:'lg',
+          borderRadius: "10px",
+          _hover: {            
+            background: "#7879F1",
+            color: "white",
+          }
+        },
+        dealDetailTabMyInvestment: {
+          background: "white",
+          color: "black",
+          size:'lg',
+          borderRadius: "10px",
+          _hover: {            
+            background: "blue.100",
+            color: "white",
+          }
+        },
+        dealDetailTabInvestSel: {
+          background: "#7879F1",
+          color: "white",
+          size:'lg',
+          borderRadius: "10px"
+        },
+        dealDetailTabMyInvestmentSel: {
+          background: "blue.100",
+          color: "white",
+          size:'lg',
+          borderRadius: "10px",
+        },
+        dealDetailTable: {
+          background: "#7879F1",
+          color: "white",
+          size:'lg'
         }
       },
     },
@@ -172,6 +218,11 @@ const DealDexTheme = extendTheme({
         verified: {
           background: "iris.80",
           color: "white",
+        },
+        verified2: {
+          background: "iris.80",
+          color: "white",
+          marginTop: "-20px"
         },
       },
     },
@@ -201,6 +252,15 @@ const DealDexTheme = extendTheme({
             lineHeight: "100%",
           },
         },
+        dealDetailProjectTable: {
+          tbody: {
+            tr: {
+              _odd: {
+                background: "#EDF2F7"
+              }
+            }
+          }
+        }
       },
     },
     Tabs: {

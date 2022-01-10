@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from "react";
 
 import { Flex, Box, VStack, Wrap, WrapItem, Table, Thead, Tbody, Tr, Th, Td, Badge } from "@chakra-ui/react";
 
-import { TimeDeadline, RoundNumbers, Symbols } from "../../Utils/ComponentUtils";
+import { TimeDeadline, RoundNumbers, Symbols, NFTName } from "../../Utils/ComponentUtils";
 
 import { APP_ID, SERVER_URL } from "../../App";
 import { useMoralis } from "react-moralis";
@@ -12,7 +12,7 @@ const DummyData = [
     dealName: "Bright Windows",
     syndicateAddress: "Aristotle Capital",
     isVerified: false,
-    requiredNFT: "CoinGecko",
+    contractNFT: "0x16baF0dE678E52367adC69fD067E5eDd1D33e3bF",
     minInvestmentAmount: 10,
     address: "0xbdbea2c43adaf5ec1f4afce4c6cbe59ab29ff7bb",
     deadline: 1664879311,
@@ -21,7 +21,7 @@ const DummyData = [
     dealName: "MOXY 2",
     syndicateAddress: "Aristotle Capital",
     isVerified: false,
-    requiredNFT: "Golden Ape",
+    contractNFT: "0x83539759905d088905D63bcd8828B9f6b7e928f1",
     minInvestmentAmount: 10000000,
     address: "0x4ea4e3621adb7051666958c6afe54f6db1a37d83",
     deadline: 1641228522,
@@ -79,7 +79,9 @@ const ListDeals = ({ data = [] }) => {
                 </Thead>
                 <Tbody>
                   <Tr>
-                    <Td>{item.requiredNFT}</Td>
+                    <Td>
+                      <NFTName address={item.contractNFT} />
+                    </Td>
                     <Td>
                       <RoundNumbers num={item.minInvestmentAmount} /> <Symbols address={item.address} />
                     </Td>

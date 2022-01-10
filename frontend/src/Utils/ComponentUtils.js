@@ -72,3 +72,23 @@ export const Symbols = ({ address }) => {
 
   return symbol;
 };
+
+export const NFTName = ({ address }) => {
+  const [NFTName, setNFTName] = useState("");
+  const { Moralis } = useMoralis();
+
+  useEffect(() => {
+    Moralis.start({ serverUrl: SERVER_URL, appId: APP_ID });
+  }, []);
+
+  useEffect(() => {
+    async function getNFTMetadata() {
+      const option = { chain: "rinkeby", address: address };
+      const NFT = await Moralis.Web3API.token.getNFTMetadata(option);
+      return setNFTName(NFT.name);
+    }
+    getNFTMetadata();
+  }, [address]);
+
+  return NFTName;
+};
