@@ -176,16 +176,6 @@ const DealDexTheme = extendTheme({
             color: "white",
           }
         },
-        dealform2Details: {
-          background: "#7879F1",
-          color: "white",
-          mt: "0px",
-          width: "380px",
-          fontWeight: "600",
-          fontSize: "18px",
-          lineHeight: "129%",
-          size:'lg'
-        },
         dealDetailTabMyInvestment: {
           background: "white",
           color: "black",
@@ -212,7 +202,17 @@ const DealDexTheme = extendTheme({
           background: "#7879F1",
           color: "white",
           size:'lg'
-        }
+        },
+        dealform2Details: {
+          background: "#7879F1",
+          color: "white",
+          mt: "0px",
+          width: "380px",
+          fontWeight: "600",
+          fontSize: "18px",
+          lineHeight: "129%",
+          size:'lg'
+        },
       },
     },
     Badge: {
