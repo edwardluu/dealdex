@@ -2,9 +2,10 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import { Flex, Box, VStack, Wrap, WrapItem, Table, Thead, Tbody, Tr, Th, Td, Checkbox, Center } from "@chakra-ui/react";
 
-import { RoundNumbers } from '../../Utils/FunctionUtils'
+import { RoundNumbers, Symbols } from "../../Utils/ComponentUtils";
 
-let Moralis = require("moralis");
+import { APP_ID, SERVER_URL } from "../../App";
+import { useMoralis } from "react-moralis";
 
 const DummyData = [
   {
@@ -20,7 +21,7 @@ const DummyData = [
         },
         myInvestmentAmount: 1500,
         status: "Claimed",
-        address: "0x4ea4e3621adb7051666958c6afe54f6db1a37d83"
+        address: "0x4ea4e3621adb7051666958c6afe54f6db1a37d83",
       },
       {
         dealName: "CardStellar Series A",
@@ -30,7 +31,7 @@ const DummyData = [
         },
         myInvestmentAmount: 20000,
         status: "Claimed",
-        address: "0x4ea4e3621adb7051666958c6afe54f6db1a37d83"
+        address: "0x4ea4e3621adb7051666958c6afe54f6db1a37d83",
       },
     ],
   },
@@ -46,7 +47,7 @@ const DummyData = [
         },
         myInvestmentAmount: 100000,
         status: "Claimable",
-        address: "0x4ea4e3621adb7051666958c6afe54f6db1a37d83"
+        address: "0x4ea4e3621adb7051666958c6afe54f6db1a37d83",
       },
       {
         dealName: "CardStellar Series B",
@@ -56,16 +57,22 @@ const DummyData = [
         },
         myInvestmentAmount: 20000,
         status: "Claimed",
-        address: "0x4ea4e3621adb7051666958c6afe54f6db1a37d83"
+        address: "0x4ea4e3621adb7051666958c6afe54f6db1a37d83",
       },
     ],
   },
 ];
 
-const Investments = ({ userAddress = "" }) => {
+const AccountInvestments = ({ userAddress = "" }) => {
   const [NFTs, setNFTs] = useState([]);
 
   const dataInvestment = useMemo(() => DummyData, []);
+
+  const { Moralis } = useMoralis();
+
+  useEffect(() => {
+    Moralis.start({ serverUrl: SERVER_URL, appId: APP_ID });
+  }, []);
 
   useEffect(() => {
     async function testnetNFTs() {
@@ -110,7 +117,7 @@ const Investments = ({ userAddress = "" }) => {
   );
 };
 
-export default Investments;
+export default AccountInvestments;
 
 const InvestmentsItems = ({ data = [] }) => {
   const [checkedItem, setCheckedItem] = useState(true);
@@ -143,7 +150,7 @@ const InvestmentsItems = ({ data = [] }) => {
                   </Flex>
                 </Td>
                 <Td>
-                  { RoundNumbers(item.myInvestmentAmount)}  <Symbols tokenAddress={item.address} />
+                  <RoundNumbers num={item.myInvestmentAmount} /> <Symbols address={item.address} />
                 </Td>
                 <Td>
                   <Box color={item.status === "Claimable" ? "green.500" : "gray.700"}>{item.status}</Box>
@@ -156,18 +163,3 @@ const InvestmentsItems = ({ data = [] }) => {
     </>
   );
 };
-
-const Symbols = ({tokenAddress}) => {
-  const [symbol, setSymbol] = useState('')
-
-  useEffect(()=> {
-    async function getTokenMetadata() {
-      const option = { chain: "testnet", addresses: tokenAddress };
-      const tokenMetadata = await Moralis.Web3API.token.getTokenMetadata(option);
-      return setSymbol(tokenMetadata[0].symbol);
-    }
-    getTokenMetadata()
-  }, [tokenAddress])
-
-  return symbol
-}

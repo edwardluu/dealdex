@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { Flex, Container } from "@chakra-ui/react";
 import { Button, VStack, Box, Wrap, WrapItem, Table, Thead, Tbody, Tr, Th, Td, Badge } from "@chakra-ui/react";
 import { ReactComponent as Logo } from "../assets/icon/DealDexLogo.svg";
-
+import { TimeDeadline, RoundNumbers , Symbols} from '../Utils/ComponentUtils'
 import DealService from "../Services/DealService";
 
 const DummyData = [
@@ -13,8 +13,8 @@ const DummyData = [
     syndicateAddress: "MoonBoots Capital",
     isVerified: true,
     requiredNFT: "BAYC",
-    minInvestmentAmount: "10",
-    paymentToken: "USDC",
+    minInvestmentAmount: 10,
+    address: "0x4ea4e3621adb7051666958c6afe54f6db1a37d83",
     deadline: 1664879311,
   },
   {
@@ -22,8 +22,8 @@ const DummyData = [
     syndicateAddress: "Web3 Capital",
     isVerified: false,
     requiredNFT: "BAYC",
-    minInvestmentAmount: "10k",
-    paymentToken: "USDC",
+    minInvestmentAmount: 10000,
+    address: "0x4ea4e3621adb7051666958c6afe54f6db1a37d83",
     deadline: 1641228522,
   },
 ];
@@ -77,27 +77,6 @@ export default HomeView;
 const ListDeals = ({ data = [] }) => {
   if (!data.length) return <Box textStyle="titleDeal">No deals created so far</Box>;
 
-  const getTimeDeadline = (deadline = 0) => {
-    const dateDeadline = new Date(deadline * 1000);
-    const now = new Date();
-    const diffInSeconds = Math.floor(dateDeadline - now) / 1000;
-    const days = Math.floor(diffInSeconds / 60 / 60 / 24);
-    const hours = Math.floor((diffInSeconds / 60 / 60) % 24);
-    const minutes = Math.floor((diffInSeconds / 60) % 60);
-    const seconds = Math.floor(diffInSeconds % 60);
-    if (days > 0) {
-      return `${days}d left`;
-    } else if (days <= 0 && hours > 0) {
-      return `${hours}hr left`;
-    } else if (days <= 0 && hours <= 0 && minutes > 0) {
-      return `${minutes}min left`;
-    } else if (days <= 0 && hours <= 0 && minutes <= 0 && seconds > 0) {
-      return `${seconds}s left`;
-    } else {
-      return <Box textStyle="statusDeal">Passed</Box>;
-    }
-  };
-
   return (
     <Wrap spacing="45px">
       {data.map((item, index) => (
@@ -126,9 +105,11 @@ const ListDeals = ({ data = [] }) => {
                   <Tr>
                     <Td>{item.requiredNFT}</Td>
                     <Td>
-                      {item.minInvestmentAmount} {item.paymentToken}
+                      <RoundNumbers num={item.minInvestmentAmount} /> <Symbols  address={item.address}/>
                     </Td>
-                    <Td>{getTimeDeadline(item.deadline)}</Td>
+                    <Td>
+                      <TimeDeadline deadline={item.deadline} />
+                    </Td>
                   </Tr>
                 </Tbody>
               </Table>
