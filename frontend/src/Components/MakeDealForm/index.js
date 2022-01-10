@@ -32,12 +32,12 @@ import {useHistory} from "react-router-dom"
 import DealFormStep1 from './DealFormStep1';
 import DealFormStep2 from './DealFormStep2';
 import DealFormStep3 from './DealFormStep3';
-import StepsComponent from './StepsComponent';
+import StepsComponent from './StepsComponent'; 
 
 function MakeDealForm(props) {
     // This is doubling as the display variable so 'none' is the only valid default value
     const [dealData, setDealData] = useState(Deal.empty());
-    const [activeStep, setActiveStep] = useState(3);
+    const [activeStep, setActiveStep] = useState(2);
 
     const logined = true;
 
