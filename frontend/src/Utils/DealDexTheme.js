@@ -203,7 +203,7 @@ const DealDexTheme = extendTheme({
           color: "white",
           size:'lg'
         },
-        dealform2Details: {
+        dealForm2Details: {
           background: "#7879F1",
           color: "white",
           mt: "0px",

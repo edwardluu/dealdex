@@ -292,7 +292,7 @@ function DealFormStep2(props) {
             
             <HStack w="full" h="full" pt={40} spacing={10} alignItems="flex-start">
                 <Button variant="dealformBack" size='lg' onClick={handlePrevStep}>Back</Button>
-                <Button variant="dealform2Details" size='lg' onClick={handleNextStep} disabled = {enableButton}>Continue to project details</Button>
+                <Button variant="dealForm2Details" size='lg' onClick={handleNextStep} disabled = {enableButton}>Continue to project details</Button>
             </HStack>
         </GridItem>
     )
