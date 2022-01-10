@@ -1,36 +1,25 @@
 import {
-    FormControl,
-    FormHelperText,
-    FormLabel,
     GridItem,
-    Input,
     HStack,
     VStack,
     Button,
     Text,
-    NumberInput,
-    NumberInputField,
-    NumberInputStepper,
-    NumberIncrementStepper,
-    NumberDecrementStepper,
-    InputGroup,
-    InputRightElement,
-    InputLeftElement,
-    IconButton,
-    Box,
     Container,
     Grid,
-    Center,
 } from '@chakra-ui/react';
-import { CalendarIcon, CheckCircleIcon, CloseIcon } from '@chakra-ui/icons'
-import {useEffect, useState} from 'react'
+import { CalendarIcon, CheckCircleIcon, CloseIcon } from '@chakra-ui/icons';
+import {useEffect, useState} from 'react';
 import "react-datepicker/dist/react-datepicker.css";
+import {MakeDealFormItem, MakeDealFormNumberItem} from './index';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import './date-picker.css';
 
 import { useMoralis } from "react-moralis";
 //import Moralis from "moralis/types";
 import {APP_ID, SERVER_URL} from "../../App";
 
-function DealFormStep2(props) {
+function DealFormStep3(props) {
     //const format = (val) => val + `%`;
     const format = (val) => val;
     const parse = (val) => val.replace(/^\%/, '')
@@ -169,6 +158,7 @@ function DealFormStep2(props) {
                     value = {props.dealData.dealAddress}
                     onBlur = {e => formatInput(e)}
                     isRequired = {true}
+                    verified = {props.dealData.dealAddress && props.dealData.dealAddress.length > 0}
                     helperText = "This wallet will be able to withdraw all funds from the deal once the minimum round size has been reached."
                 />
             </HStack>
@@ -187,6 +177,7 @@ function DealFormStep2(props) {
                     formatFuc = {formatCoin}
                     parseFuc = {parseCoin}
                     appendChar = {tokenPriceUnit}
+                    verified={true}
                     helperText = "The price of the project’s token. This can be updated by the project in the future."
                 />
             </HStack>
@@ -219,12 +210,13 @@ function DealFormStep2(props) {
                     <MakeDealFormItem 
                         title="Vest Date"
                         colSpan={2}
-                        onChange = {e => props.setDealData({ ...props.dealData, investmentDeadline: e.target.value})}
+                        onChange = {v => props.setDealData({ ...props.dealData, investmentDeadline: v})}
                         placeholder = "Dec 26, 2021 07:14:31"
                         value = {props.dealData.investmentDeadline}
                         onBlur = {e => formatInput(e)}
                         width="50%"
                         dateformat = {true}
+                        DatePicker={DatePicker}
                         helperText = "Date and time that the tokens will vest"
                     />
                     <MakeDealFormNumberItem 
@@ -274,83 +266,4 @@ function DealFormStep2(props) {
     )
 }
 
-function MakeDealFormItem(props) {
-    let title = props.title
-    let colSpan = props.colSpan
-    let onChange = props.onChange
-    let placeholder = props.placeholder
-    let value = props.value
-    let helperText = props.helperText
-    var isRequired 
-    if (props.isRequired) {
-        isRequired = props.isRequired
-    } else {
-        isRequired = false
-    }
-
-    return (
-        <>
-            <FormControl isRequired={isRequired} pt={5} width={props.width}>
-                <FormLabel>{title}</FormLabel> 
-                <InputGroup>
-                <Input 
-                        onChange={onChange}
-                        placeholder={placeholder}
-                        value={value}
-                    />
-                {(isRequired && value) && <InputRightElement children={<CheckCircleIcon color="#7879F1"/>} />}
-                {/* {props.dateformat && <InputRightElement children={<IconButton aria-label='Search database' icon={<CalendarIcon />} />} />} */}
-                {props.dateformat && <InputRightElement children={<CalendarIcon color="#2D3748"/>} />}
-                </InputGroup>
-                {helperText &&
-                    <FormHelperText textAlign="left" fontSize="16px" >{helperText}</FormHelperText>
-                }
-            </FormControl>
-        </>
-    )
-}
-
-function MakeDealFormNumberItem(props) {
-    let title = props.title
-    let colSpan = props.colSpan
-    let onChange = props.onChange
-    let placeholder = props.placeholder
-    let helperText = props.helperText
-    let value = props.value
-    var isRequired 
-    if (props.isRequired) {
-        isRequired = props.isRequired
-    } else {
-        isRequired = false
-    }
-
-    return (
-        <>
-            <FormControl isRequired={isRequired} pt={5} width={props.width}>
-                <FormLabel>{title}</FormLabel> 
-                <NumberInput 
-                    value={props.parsing ? props.formatFuc(value) : value} 
-                    precision={1} 
-                    step={0.1} 
-                    min={0}
-                    max={props.maxvalue}
-                    onChange={onChange}
-                    placeholder={placeholder}
-                >
-                    <NumberInputField />
-                    {!(props.appendChar !== "%" && (value === "0.0" || value === ".0" || value === "0" || value === "0.")) && 
-                        <InputLeftElement ml={((value.length - 1) * 8.6 + 25) + "px"} width="fit-content" children={<Text variant="dealInputAppendix">{props.appendChar}</Text>} />}
-                    <NumberInputStepper>
-                        <NumberIncrementStepper />
-                        <NumberDecrementStepper />
-                    </NumberInputStepper>
-                </NumberInput>
-                {helperText &&
-                    <FormHelperText textAlign="left" fontSize="16px" >{helperText}</FormHelperText>
-                }
-            </FormControl>
-        </>
-    )
-}
-
-export default DealFormStep2;
+export default DealFormStep3;

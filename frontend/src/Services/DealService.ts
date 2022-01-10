@@ -42,7 +42,7 @@ export default class DealService {
         const maxTotalWei = ethers.utils.parseEther(dealData.maxTotalInvestment!.toString()) 
 
         const deadlineUnixTimestamp = Math.round( 
-            dealData.investmentDeadline!.getTime() / 1000
+            dealData.vestDate!.getTime() / 1000
         )
         const deadline = BigNumber.from(deadlineUnixTimestamp.toString())
 

@@ -316,7 +316,20 @@ const DealDexTheme = extendTheme({
           textAlign: "left",
         }
       }
-    }
+    },
+    FormHelperText: {
+      variants: {
+        dealFormDesc: {
+          textAlign: "left",
+          fontSize: "16px",
+        },
+        dealFormError: {
+          textAlign: "left",
+          fontSize: "16px",
+          color: "#E53E3E"
+        }
+      }
+    },
   },
 });
 
