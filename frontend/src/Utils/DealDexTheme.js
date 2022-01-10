@@ -166,6 +166,16 @@ const DealDexTheme = extendTheme({
           lineHeight: "129%",
           size:'lg'
         },
+        dealform2Details: {
+          background: "#7879F1",
+          color: "white",
+          mt: "0px",
+          width: "380px",
+          fontWeight: "600",
+          fontSize: "18px",
+          lineHeight: "129%",
+          size:'lg'
+        },
         dealDetailTabInvest: {
           background: "white",
           color: "black",
@@ -316,7 +326,20 @@ const DealDexTheme = extendTheme({
           textAlign: "left",
         }
       }
-    }
+    },
+    FormHelperText: {
+      variants: {
+        dealFormDesc: {
+          textAlign: "left",
+          fontSize: "16px",
+        },
+        dealFormError: {
+          textAlign: "left",
+          fontSize: "16px",
+          color: "#E53E3E"
+        }
+      }
+    },
   },
 });
 
